@@ -36,13 +36,15 @@ const countertext = document.querySelector('.counterBox');
 const counter = document.querySelector('.counter');
 const body = document.body;
 
-let clickcount = localStorage.getItem('clickcount')|| 0;
+
 
 clickcount = Number(clickcount);
 
 counter.textContent = clickcount;
 
 let clickCounter = 0;
+
+let clickcount = 0;
 getDoc(counterRef).then((doc) => {
   if (doc.exists()) {
     clickcount = doc.data().count || 0;
@@ -109,3 +111,8 @@ hovertarget.addEventListener('mouseenter', () => {
 hovertarget.addEventListener('mouseleave', () => {
     countertext.style.color = 'black';
 })
+
+
+
+
+

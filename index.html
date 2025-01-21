@@ -83,7 +83,6 @@
   
               // Update local storage and UI
               localStorage.setItem('clickcount', newCount); // Sync with local storage
-              counter.textContent = newCount; // Update UI
             } else {
               // Initialize the counter document in Firestore if it does not exist
               await setDoc(counterRef, { count: 0 });

@@ -1,6 +1,6 @@
 // Import Firebase libraries
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -17,8 +17,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Firestore Reference
-const counterRef = doc(collection(db, 'clickData'), 'counter');
+// Firestore Reference to the counter document
+const counterRef = doc(db, 'clickData', 'counter');
 
 // HTML Element References
 const hovertarget = document.querySelector('.container3');
@@ -27,14 +27,16 @@ const countertext = document.querySelector('.counterBox');
 const counter = document.querySelector('.counter');
 const body = document.body;
 
-// Initialize clickcount
+// Initialize clickcount from Firestore
 let clickcount = 0;
+
+// Fetch data from Firestore
 getDoc(counterRef).then((docSnapshot) => {
   if (docSnapshot.exists()) {
     clickcount = docSnapshot.data().count || 0;
-    counter.textContent = clickcount;
+    counter.textContent = clickcount; // Update counter on page
   } else {
-    // Initialize counter in Firestore if missing
+    // Initialize the counter document in Firestore if it does not exist
     setDoc(counterRef, { count: 0 });
   }
 });
@@ -70,28 +72,28 @@ const actions = [
   () => (body.style.backgroundColor = '#A1C4FD'),
 ];
 
-// Event listener for button click
+// Click Event Listener to update counter and Firestore
 clicktarget.addEventListener('click', async () => {
   // Perform background color action
   actions[clickCounter]();
   clickCounter = (clickCounter + 1) % actions.length;
 
-  // Increment Firestore counter
+  // Fetch the current counter value from Firestore
   const docSnapshot = await getDoc(counterRef);
   if (docSnapshot.exists()) {
     const currentCount = docSnapshot.data().count || 0;
     const newCount = currentCount + 1;
 
-    // Update Firestore with new counter value
+    // Update Firestore with the new counter value
     await setDoc(counterRef, { count: newCount });
 
-    // Update UI and localStorage
+    // Update the counter on the UI
     counter.textContent = newCount;
-    localStorage.setItem('clickcount', newCount);
+    localStorage.setItem('clickcount', newCount); // Store in localStorage as well
   }
 });
 
-// Hover effects for changing background and counter text color
+// Hover effects to change background and counter text color
 hovertarget.addEventListener('mouseenter', () => {
   body.style.backgroundColor = '#000000';
   countertext.style.color = 'white';

@@ -1,3 +1,35 @@
+// Import Firebase libraries
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyA2axhnlDhVTv5ac5GUpX99rgQQoj0-uXw",
+  authDomain: "techtitive-counter.firebaseapp.com",
+  projectId: "techtitive-counter",
+  storageBucket: "techtitive-counter.firebasestorage.app",
+  messagingSenderId: "374532775348",
+  appId: "1:374532775348:web:337ceaa95f051eebd066e1",
+  measurementId: "G-0C5VJE3VPW"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const counterRef = doc(collection(db, 'clickData'), 'counter');
+
+// Fetch data
+counterRef.get().then((doc) => {
+  if (doc.exists) {
+    console.log(doc.data());
+  }
+});
+
+
 const hovertarget = document.querySelector('.container3');
 const clicktarget = document.querySelector('.button');
 const countertext = document.querySelector('.counterBox');
@@ -11,6 +43,15 @@ clickcount = Number(clickcount);
 counter.textContent = clickcount;
 
 let clickCounter = 0;
+getDoc(counterRef).then((doc) => {
+  if (doc.exists()) {
+    clickcount = doc.data().count || 0;
+    counter.textContent = clickcount;
+  } else {
+    // Initialize in Firestore if missing
+    setDoc(counterRef, { count: 0 });
+  }
+});
 
 const actions = [
     () => (body.style.backgroundColor = '#A1C4FD'),
@@ -68,8 +109,3 @@ hovertarget.addEventListener('mouseenter', () => {
 hovertarget.addEventListener('mouseleave', () => {
     countertext.style.color = 'black';
 })
-
-
-
-
-

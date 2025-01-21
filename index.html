@@ -20,71 +20,79 @@
     </div>
     <script src="Action.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js"></script>
+  
+    <!-- Firebase Firestore Code -->
+    <script type="module">
+      // Import Firebase libraries
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+      import { getFirestore, doc, getDoc, setDoc, runTransaction } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+  
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyA2axhnlDhVTv5ac5GUpX99rgQQoj0-uXw",
+        authDomain: "techtitive-counter.firebaseapp.com",
+        projectId: "techtitive-counter",
+        storageBucket: "techtitive-counter.firebasestorage.app",
+        messagingSenderId: "374532775348",
+        appId: "1:374532775348:web:337ceaa95f051eebd066e1",
+        measurementId: "G-0C5VJE3VPW"
+      };
+  
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+  
+      // Firestore Reference to the counter document
+      const counterRef = doc(db, 'clickData', 'counter');
+  
+      // HTML Element References
+      const clicktarget = document.querySelector('.button');
+      const counter = document.querySelector('.counter');
+  
+      let clickcount = localStorage.getItem('clickcount') || 0;  // Get value from local storage
+      clickcount = Number(clickcount);  // Convert to number
+      counter.textContent = clickcount;  // Display counter on page
+  
+      // Fetch data from Firestore to set initial counter value
+      getDoc(counterRef).then((docSnapshot) => {
+        if (docSnapshot.exists()) {
+          clickcount = docSnapshot.data().count || 0;
+          localStorage.setItem('clickcount', clickcount); // Sync with local storage
+          counter.textContent = clickcount; // Update UI
+        } else {
+          // Initialize the counter document in Firestore if it does not exist
+          setDoc(counterRef, { count: 0 });
+        }
+      });
+  
+      // Click Event Listener to update counter and Firestore using transaction
+      clicktarget.addEventListener('click', async () => {
+        try {
+          // Run a Firestore transaction to ensure atomicity of the update
+          await runTransaction(db, async (transaction) => {
+            const docSnapshot = await transaction.get(counterRef);
+            if (docSnapshot.exists()) {
+              const currentCount = docSnapshot.data().count || 0;
+              const newCount = currentCount + 1;
 
-  <!-- Firebase Firestore Code -->
-  <script type="module">
-    // Import Firebase libraries
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, runTransaction } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
-
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyA2axhnlDhVTv5ac5GUpX99rgQQoj0-uXw",
-      authDomain: "techtitive-counter.firebaseapp.com",
-      projectId: "techtitive-counter",
-      storageBucket: "techtitive-counter.firebasestorage.app",
-      messagingSenderId: "374532775348",
-      appId: "1:374532775348:web:337ceaa95f051eebd066e1",
-      measurementId: "G-0C5VJE3VPW"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Firestore Reference to the counter document
-    const counterRef = doc(db, 'clickData', 'counter');
-
-    // HTML Element References
-    const clicktarget = document.querySelector('.button');
-    const counter = document.querySelector('.counter');
-
-    // Fetch data from Firestore to set initial counter value
-    getDoc(counterRef).then((docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const clickcount = docSnapshot.data().count || 0;
-        counter.textContent = clickcount; // Update counter on page
-      } else {
-        // Initialize the counter document in Firestore if it does not exist
-        setDoc(counterRef, { count: 0 });
-      }
-    });
-
-    // Click Event Listener to update counter and Firestore using transaction
-    clicktarget.addEventListener('click', async () => {
-      try {
-        // Run a Firestore transaction to ensure atomicity of the update
-        await runTransaction(db, async (transaction) => {
-          const docSnapshot = await transaction.get(counterRef);
-          if (docSnapshot.exists()) {
-            const currentCount = docSnapshot.data().count || 0;
-            const newCount = currentCount + 1;
-
-            // Update the counter in Firestore
-            transaction.update(counterRef, { count: newCount });
-
-            // Update the counter on the UI
-            counter.textContent = newCount;
-          } else {
-            // Initialize the counter document in Firestore if it does not exist
-            await setDoc(counterRef, { count: 0 });
-          }
-        });
-      } catch (error) {
-        console.error("Error updating counter:", error);
-      }
-    });
-  </script>
+              newCount = localStorage.setItem('clickcount');
+  
+              // Update the counter in Firestore
+              transaction.update(counterRef, { count: newCount });
+  
+              // Update local storage and UI
+              localStorage.setItem('clickcount', newCount); // Sync with local storage
+              counter.textContent = newCount; // Update UI
+            } else {
+              // Initialize the counter document in Firestore if it does not exist
+              await setDoc(counterRef, { count: 0 });
+            }
+          });
+        } catch (error) {
+          console.error("Error updating counter:", error);
+        }
+      });
+    </script>
 </body>
 </html>

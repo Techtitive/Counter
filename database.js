@@ -24,27 +24,32 @@ const clicktarget = document.querySelector('.button');
 const counter = document.querySelector('.counter');
 
 // Initialize local storage and UI
-let clickcount = Number(localStorage.getItem('clickcount') || 0); // Get from local storage
-counter.textContent = clickcount; // Update UI with local storage value
+let clickcount = 0; // Start with zero
 
-// Sync Firestore and local storage
+// Function to update local storage and UI
+function updateLocalStorageAndUI(newCount) {
+    clickcount = newCount;
+    localStorage.setItem('clickcount', clickcount);
+    counter.textContent = clickcount;
+}
+
+// Function to sync Firestore and local storage
 async function syncWithFirestore() {
     try {
         const docSnapshot = await getDoc(counterRef);
+
         if (docSnapshot.exists()) {
             const firestoreCount = docSnapshot.data().count || 0;
 
-            // If Firestore has a higher count, update local storage and UI
+            // Sync local storage with Firestore if needed
             if (firestoreCount > clickcount) {
-                clickcount = firestoreCount;
-                localStorage.setItem('clickcount', clickcount);
-                counter.textContent = clickcount;
+                updateLocalStorageAndUI(firestoreCount);
             } else if (firestoreCount < clickcount) {
                 // If local storage has a higher count, update Firestore
                 await updateDoc(counterRef, { count: clickcount });
             }
         } else {
-            // Initialize Firestore document if it doesn't exist
+            // Initialize Firestore with local storage value if it doesn't exist
             await setDoc(counterRef, { count: clickcount });
         }
     } catch (error) {
@@ -56,28 +61,40 @@ async function syncWithFirestore() {
 onSnapshot(counterRef, (docSnapshot) => {
     if (docSnapshot.exists()) {
         const firestoreCount = docSnapshot.data().count || 0;
+
+        // Update local storage and UI if Firestore changes
         if (firestoreCount !== clickcount) {
-            clickcount = firestoreCount;
-            localStorage.setItem('clickcount', clickcount);
-            counter.textContent = clickcount;
+            updateLocalStorageAndUI(firestoreCount);
         }
     }
 });
 
 // Button click event
 clicktarget.addEventListener('click', async () => {
-    // Update local storage and UI immediately
-    clickcount++;
-    localStorage.setItem('clickcount', clickcount);
-    counter.textContent = clickcount;
+    // Increment the counter
+    const newCount = clickcount + 1;
+
+    // Update local storage and UI
+    updateLocalStorageAndUI(newCount);
 
     try {
         // Update Firestore
-        await updateDoc(counterRef, { count: clickcount });
+        await updateDoc(counterRef, { count: newCount });
     } catch (error) {
         console.error("Error updating Firestore:", error);
     }
 });
 
 // Sync Firestore and local storage on page load
-syncWithFirestore();
+async function initialize() {
+    const localCount = Number(localStorage.getItem('clickcount')) || 0;
+    clickcount = localCount;
+
+    // Update UI with the local storage value initially
+    counter.textContent = clickcount;
+
+    // Sync with Firestore to ensure consistency
+    await syncWithFirestore();
+}
+
+initialize();

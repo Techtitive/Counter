@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 import { getFirestore, doc, updateDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { FieldValue } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -21,6 +22,7 @@ const counterRef = doc(db, 'clickData', 'counter');
 
 // HTML element references
 const clicktarget = document.querySelector('.button');
+const resetButton = document.querySelector('.reset-button'); // Reset button reference
 const counter = document.querySelector('.counter');
 
 // Initialize UI and local storage
@@ -30,7 +32,6 @@ let clickcount = 0;
 onSnapshot(counterRef, (docSnapshot) => {
     if (docSnapshot.exists()) {
         const firestoreCount = docSnapshot.data().count || 0;
-
         // Synchronize Firestore to local storage and UI
         if (firestoreCount !== clickcount) {
             clickcount = firestoreCount;
@@ -44,14 +45,28 @@ onSnapshot(counterRef, (docSnapshot) => {
     }
 });
 
-// Button click event
+// Button click event with atomic increment
 clicktarget.addEventListener('click', async () => {
     try {
-        // Increment the count in Firestore
+        // Use Firestore's atomic increment operation
         await updateDoc(counterRef, {
-            count: clickcount + 1 // Firestore becomes the single source of truth
+            count: FieldValue.increment(1)
         });
     } catch (error) {
         console.error("Error updating Firestore:", error);
+    }
+});
+
+// Reset button click event
+resetButton.addEventListener('click', async () => {
+    try {
+        // Reset the counter to 0 in Firestore
+        await setDoc(counterRef, { count: 0 });
+        // Update local storage and UI
+        clickcount = 0;
+        localStorage.setItem('clickcount', clickcount);
+        counter.textContent = clickcount;
+    } catch (error) {
+        console.error("Error resetting Firestore:", error);
     }
 });

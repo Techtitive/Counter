@@ -64,16 +64,10 @@ hovertarget.addEventListener('mouseleave', () => {
 
 hovertarget.addEventListener('mouseenter', () => {
     countertext.style.color = 'white';
-})
-
-hovertarget.addEventListener('mouseleave', () => {
-    countertext.style.color = 'black';
-})
-
-hovertarget.addEventListener('mouseenter', () => {
     title.style.color = 'white';
 })
 
 hovertarget.addEventListener('mouseleave', () => {
+    countertext.style.color = 'black';
     title.style.color = 'black';
 })

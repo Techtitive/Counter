@@ -27,20 +27,20 @@ const counter = document.querySelector('.counter');
 let clickcount = Number(localStorage.getItem('clickcount') || 0); // Get from local storage
 counter.textContent = clickcount; // Update UI with local storage value
 
-// Function to sync Firestore and local storage
+// Sync Firestore and local storage
 async function syncWithFirestore() {
     try {
         const docSnapshot = await getDoc(counterRef);
         if (docSnapshot.exists()) {
             const firestoreCount = docSnapshot.data().count || 0;
 
-            // Update local storage and UI if Firestore has a higher value
+            // If Firestore has a higher count, update local storage and UI
             if (firestoreCount > clickcount) {
                 clickcount = firestoreCount;
                 localStorage.setItem('clickcount', clickcount);
                 counter.textContent = clickcount;
             } else if (firestoreCount < clickcount) {
-                // Update Firestore if local storage has a higher value
+                // If local storage has a higher count, update Firestore
                 await updateDoc(counterRef, { count: clickcount });
             }
         } else {
@@ -52,7 +52,7 @@ async function syncWithFirestore() {
     }
 }
 
-// Real-time listener for updates from Firestore
+// Real-time listener for Firestore updates
 onSnapshot(counterRef, (docSnapshot) => {
     if (docSnapshot.exists()) {
         const firestoreCount = docSnapshot.data().count || 0;
@@ -72,12 +72,12 @@ clicktarget.addEventListener('click', async () => {
     counter.textContent = clickcount;
 
     try {
-        // Sync with Firestore
+        // Update Firestore
         await updateDoc(counterRef, { count: clickcount });
     } catch (error) {
         console.error("Error updating Firestore:", error);
     }
 });
 
-// Sync on page load
+// Sync Firestore and local storage on page load
 syncWithFirestore();

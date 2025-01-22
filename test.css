@@ -1,9 +1,10 @@
 .body {
     transition: background 0.5s ease-in-out;
+    display: flex;
     justify-content: center;
-    align-items: center;
-    align-content: center;
+	align-items: center;
     animation-duration: 2s;
+    overflow: hidden;
 }
 
 .container1 {
@@ -19,6 +20,7 @@
     right: 0;
     margin: auto;
     box-shadow: 0px 0px 10px yellow;
+    overflow: hidden;
 }
 
 .container2 {
@@ -54,6 +56,8 @@
     font-size: larger;
     border-width: 10px;
     border-color: aliceblue;
+    font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+
 }
 
 .button:hover {
@@ -63,22 +67,6 @@
     color: white;
     text-shadow: 0px 0px 10px yellow;
     box-shadow: 0px 0px 10px yellow;
-}
-
-@keyframes firstanimation{
-/*    0%{background-color: rgb(0, 255, 255);}
-    20%{background-color: rgb(180, 179, 179);}
-    30%{background-color: rgb(105, 105, 105);}
-    40%{background-color: rgb(95, 94, 94);}
-    50%{background-color: rgb(63, 63, 63);}
-    60%{background-color: rgb(36, 36, 36);}
-    70%{background-color: rgb(24, 24, 24);}
-    80%{background-color: rgb(0, 0, 0);}
-    90%{background-color: rgb(0, 88, 88);}
-    100%{background-color: rgb(0, 255, 255);}
-
-    50%{background-color: black;}
-    */
 }
 
 
@@ -91,45 +79,16 @@
     box-shadow: 0px 0px 100px yellow;
 }
 
-li:nth-child(odd){
-    background-color: rgb(255, 0, 0);
-}
-
-.nigga{
-    text-shadow: 0px 0px 10px yellow;
-    box-shadow: 0px 0px 10px yellow;
-    box-sizing: border-box;
-    animation: mynigga;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-delay: 0s;
-    animation-duration: 5s;
-    background-color:transparent;
-
-}
-
-@keyframes mynigga {
-    from{margin-left: 100%;}
-    to{margin-left: 0%;}
-    100%{transform: rotateZ(360deg);}
-    50%{transform: scale(0.5);}
-    50%{background-color: aqua;}
-    0%{color:white}
-    50%{color: black;}
-    100%{color:white}
-}
-
-
 .container3{
-    height: 180px;
+    height: 480px;
     padding-top: 40px;
-    width: 600px;
+    width: 480px;
     border: solid;
     background-color:transparent;
     border-color: transparent;
     border-width: 20px;
     position: absolute;
-    top: -50px;
+    top: 0;
     bottom: 0;
     right: 0;
     left: 0;
@@ -142,31 +101,10 @@ li:nth-child(odd){
     animation-duration: 5;
 }
 
-a:link {
-    /*color: rgb(255, 208, 0);*/
-    color: transparent;
-}
-
-a:visited{
-    /*color: red;*/
-    color: transparent;
-}
-
-a:hover{
-    /*color:rgb(0, 255, 255)*/
-    color: transparent;
-}
-
-a:active{
-    /*color: yellow;*/
-    color: transparent;
-    
-}
-
 .counterBox {
     justify-self: center;
     position: relative;
-    top: 90px;
+    top: 55px;
     right: 0;
     left: 0;
     font-family: 'DS-Digital', Georgia, 'Times New Roman', Times, serif;
@@ -174,4 +112,68 @@ a:active{
     transform: scale(2);
     transition: color 0.5s ease-in-out;
     text-shadow: 0px 0px 5px black;
+}
+
+.container3 i
+{
+	position: absolute;
+	inset: 0;
+	border: 2px solid #fff;
+	transition: 0.5s;
+}
+.container3 i:nth-child(1)
+{
+	border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+	animation: animate 6s linear infinite;
+}
+.container3 i:nth-child(2)
+{
+	border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
+	animation: animate 4s linear infinite;
+}
+.container3 i:nth-child(3)
+{
+	border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
+	animation: animate2 10s linear infinite;
+}
+.container3:hover i
+{
+	border: 6px solid var(--clr);
+	filter: drop-shadow(0 0 20px var(--clr));
+}
+@keyframes animate
+{
+	0%
+	{
+		transform: rotate(0deg);
+	}
+	100%
+	{
+		transform: rotate(360deg);
+	}
+}
+@keyframes animate2
+{
+	0%
+	{
+		transform: rotate(360deg);
+	}
+	100%
+	{
+		transform: rotate(0deg);
+	}
+}
+
+.title {
+    justify-self: center;
+    position: relative;
+    top: -85px;
+    right: 0;
+    left: 0;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 100;
+    transform: scale(1.5);
+    transition: color 0.5s ease-in-out;
+    text-shadow: 0px 0px 5px rgb(0, 255, 191);
+    text-shadow: 0px 0px 1px rgb(0, 0, 0);
 }

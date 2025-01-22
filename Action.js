@@ -3,6 +3,8 @@ const clicktarget = document.querySelector('.button');
 const countertext = document.querySelector('.counterBox');
 const counter = document.querySelector('.counter');
 const title = document.querySelector('.title')
+const viewers = document.querySelector('#active-users')
+const footer = document.querySelector('.footertext')
 const body = document.body;
 
 let clickcount = localStorage.getItem('clickcount')|| 0;
@@ -76,4 +78,28 @@ hovertarget.addEventListener('mouseenter', () => {
 
 hovertarget.addEventListener('mouseleave', () => {
     title.style.color = 'black';
+})
+
+hovertarget.addEventListener('mouseenter', () => {
+    footer.style.color = 'white';
+})
+
+hovertarget.addEventListener('mouseleave', () => {
+    footer.style.color = 'black';
+})
+
+hovertarget.addEventListener('mouseenter', () => {
+    viewers.style.backgroundColor = 'white';
+})
+
+hovertarget.addEventListener('mouseleave', () => {
+    viewers.style.backgroundColor = 'black';
+})
+
+hovertarget.addEventListener('mouseenter', () => {
+    viewers.style.color = 'black';
+})
+
+hovertarget.addEventListener('mouseleave', () => {
+    viewers.style.color = 'white';
 })

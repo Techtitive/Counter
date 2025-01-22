@@ -15,88 +15,69 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// Firestore reference
 const counterRef = doc(db, 'clickData', 'counter');
 
 // HTML element references
-const clickButton = document.querySelector('.button');
-const counterDisplay = document.querySelector('.counter');
+const clicktarget = document.querySelector('.button');
+const counter = document.querySelector('.counter');
 
-// Initialize local storage and counter
-let localCount = Number(localStorage.getItem('clickcount')) || 0;
-counterDisplay.textContent = localCount;
+// Initialize local storage and UI
+let clickcount = Number(localStorage.getItem('clickcount') || 0); // Get from local storage
+counter.textContent = clickcount; // Update UI with local storage value
 
-// Function to update Firestore from local storage
-async function syncToFirestore() {
+// Sync Firestore and local storage
+async function syncWithFirestore() {
     try {
         const docSnapshot = await getDoc(counterRef);
-        const firestoreCount = docSnapshot.exists() ? docSnapshot.data().count : 0;
+        if (docSnapshot.exists()) {
+            const firestoreCount = docSnapshot.data().count || 0;
 
-        if (localCount !== firestoreCount) {
-            if (localCount > firestoreCount) {
-                // Push local changes to Firestore
-                await setDoc(counterRef, { count: localCount });
-            } else {
-                // Pull Firestore changes to local storage
-                localCount = firestoreCount;
-                localStorage.setItem('clickcount', localCount);
-                counterDisplay.textContent = localCount;
+            // If Firestore has a higher count, update local storage and UI
+            if (firestoreCount > clickcount) {
+                clickcount = firestoreCount;
+                localStorage.setItem('clickcount', clickcount);
+                counter.textContent = clickcount;
+            } else if (firestoreCount < clickcount) {
+                // If local storage has a higher count, update Firestore
+                await updateDoc(counterRef, { count: clickcount });
             }
+        } else {
+            // Initialize Firestore document if it doesn't exist
+            await setDoc(counterRef, { count: clickcount });
         }
     } catch (error) {
         console.error("Error syncing with Firestore:", error);
     }
 }
 
-// Function to update local storage and Firestore
-async function updateCounter(newCount) {
-    // Update local storage and UI immediately
-    localCount = newCount;
-    localStorage.setItem('clickcount', localCount);
-    counterDisplay.textContent = localCount;
-
-    // Update Firestore immediately
-    try {
-        await updateDoc(counterRef, { count: localCount });
-    } catch (error) {
-        console.error("Error updating Firestore:", error);
-    }
-}
-
-// Real-time listener for Firestore changes
+// Real-time listener for Firestore updates
 onSnapshot(counterRef, (docSnapshot) => {
     if (docSnapshot.exists()) {
-        const firestoreCount = docSnapshot.data().count;
-        if (firestoreCount !== localCount) {
-            // Update local storage and UI if Firestore changes
-            localCount = firestoreCount;
-            localStorage.setItem('clickcount', localCount);
-            counterDisplay.textContent = localCount;
+        const firestoreCount = docSnapshot.data().count || 0;
+        if (firestoreCount !== clickcount) {
+            clickcount = firestoreCount;
+            localStorage.setItem('clickcount', clickcount);
+            counter.textContent = clickcount;
         }
     }
 });
 
 // Button click event
-clickButton.addEventListener('click', () => {
-    const newCount = localCount + 1;
-    updateCounter(newCount);
+clicktarget.addEventListener('click', async () => {
+    // Update local storage and UI immediately
+    clickcount++;
+    localStorage.setItem('clickcount', clickcount);
+    counter.textContent = clickcount;
+
+    try {
+        // Update Firestore
+        await updateDoc(counterRef, { count: clickcount });
+    } catch (error) {
+        console.error("Error updating Firestore:", error);
+    }
 });
 
-// Sync everything on page load
-async function init() {
-    // Ensure Firestore is initialized to zero for all devices
-    try {
-        const docSnapshot = await getDoc(counterRef);
-        if (!docSnapshot.exists()) {
-            // If Firestore doesn't exist, create a new document with count set to 0
-            await setDoc(counterRef, { count: 0 });
-        }
-
-        // Sync local storage with Firestore
-        await syncToFirestore();
-    } catch (error) {
-        console.error("Error syncing with Firestore during initialization:", error);
-    }
-}
-
-// Initialize the app
-init();
+// Sync Firestore and local storage on page load
+syncWithFirestore();

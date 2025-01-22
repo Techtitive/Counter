@@ -2,6 +2,7 @@ const hovertarget = document.querySelector('.container3');
 const clicktarget = document.querySelector('.button');
 const countertext = document.querySelector('.counterBox');
 const counter = document.querySelector('.counter');
+const title = document.querySelector('.title')
 const body = document.body;
 
 let clickcount = localStorage.getItem('clickcount')|| 0;
@@ -67,4 +68,12 @@ hovertarget.addEventListener('mouseenter', () => {
 
 hovertarget.addEventListener('mouseleave', () => {
     countertext.style.color = 'black';
+})
+
+hovertarget.addEventListener('mouseenter', () => {
+    title.style.color = 'white';
+})
+
+hovertarget.addEventListener('mouseleave', () => {
+    title.style.color = 'black';
 })

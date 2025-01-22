@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getFirestore, doc, setDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { getFirestore, doc, updateDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -23,42 +23,35 @@ const counterRef = doc(db, 'clickData', 'counter');
 const clicktarget = document.querySelector('.button');
 const counter = document.querySelector('.counter');
 
-updateLocalStorageAndUI(firestoreCount);
-localStorage.setItem(firestoreCount);
-firestoreCount === clickcount;
-clickcount === localStorage.setItem('clickcount', clickcount)
-
-// Initialize local storage and UI
+// Initialize UI and local storage
 let clickcount = 0;
 
-// Function to update local storage and UI
-function updateLocalStorageAndUI(newCount) {
-    clickcount = newCount;
-    localStorage.setItem('clickcount', clickcount);
-    counter.textContent = clickcount;
-}
-
-
-
-// Real-time listener for Firestore updates
+// Real-Time Listener for Firestore
 onSnapshot(counterRef, (docSnapshot) => {
     if (docSnapshot.exists()) {
         const firestoreCount = docSnapshot.data().count || 0;
+
+        // Synchronize Firestore to local storage and UI
         if (firestoreCount !== clickcount) {
-            updateLocalStorageAndUI(firestoreCount);
+            clickcount = firestoreCount;
+            localStorage.setItem('clickcount', clickcount);
+            counter.textContent = clickcount;
         }
+    } else {
+        console.log("Counter document not found. Initializing...");
+        // Initialize Firestore document if it doesn't exist
+        setDoc(counterRef, { count: 0 });
     }
 });
 
 // Button click event
 clicktarget.addEventListener('click', async () => {
-    const newCount = clickcount + 1;
-    updateLocalStorageAndUI(newCount);
-
     try {
-        await updateDoc(counterRef, { count: newCount });
+        // Increment the count in Firestore
+        await updateDoc(counterRef, {
+            count: clickcount + 1 // Firestore becomes the single source of truth
+        });
     } catch (error) {
         console.error("Error updating Firestore:", error);
     }
 });
-

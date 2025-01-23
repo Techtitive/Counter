@@ -30,38 +30,56 @@ const sessionId = Date.now().toString();
 // Firestore reference for live users
 const liveUsersRef = doc(db, "clickData", sessionId);
 
-// Add user to Firestore when they visit
-async function addUser() {
-  await setDoc(liveUsersRef, { online: true });
+// Time constants
+const AFK_TIMEOUT_MS = 60 * 60 * 1000; // 1 hour
+
+let afkTimeout;
+
+// Function to mark the user as active
+async function markActive() {
+  clearTimeout(afkTimeout); // Reset AFK timer
+  afkTimeout = setTimeout(async () => {
+    await removeUser(); // Mark user as AFK
+  }, AFK_TIMEOUT_MS);
+
+  // Ensure user is added to Firestore as active
+  await setDoc(liveUsersRef, { online: true, lastActive: new Date() });
 }
 
-// Remove user from Firestore when they leave
+// Function to remove user (e.g., when AFK or leaving)
 async function removeUser() {
+  clearTimeout(afkTimeout);
   await deleteDoc(liveUsersRef);
 }
 
-// Track active users and update the count
+// Function to track active users and update the count
 function trackUsers() {
   const liveUsersCollection = collection(db, "clickData");
   onSnapshot(liveUsersCollection, (snapshot) => {
-    const activeUsers = snapshot.docs.length;
+    const activeUsers = snapshot.docs.length - 1;
     const counterElement = document.getElementById("active-users");
     counterElement.textContent = `Active Users: ${activeUsers}`;
   });
 }
 
-// Initialize session and tracking
+// Initialize app logic
 async function initializeAppLogic() {
-  // Add user to Firestore
-  await addUser();
+  // Add user to Firestore on load
+  await markActive();
 
-  // Remove user when they leave
+  // Remove user when they leave the page
   window.addEventListener("beforeunload", async () => {
     await removeUser();
   });
 
-  // Track and update the active user count
+  // Track active users
   trackUsers();
+
+  // Monitor user activity
+  const events = ["mousemove", "keydown", "click", "touchstart"];
+  events.forEach((event) => {
+    document.addEventListener(event, markActive);
+  });
 }
 
 // Start the application logic

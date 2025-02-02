@@ -25,6 +25,7 @@ let isKeyPressed = false;
 // Keyboard event listener (modified)
 document.addEventListener('keydown', (event) => {
   if ((event.key === '=' || event.key === 'ArrowUp' || event.key === ' ') && !isKeyPressed) {
+    event.preventDefault();
     isKeyPressed = true; // Mark key as pressed
 
     clicktarget.click(); // Trigger increment
@@ -182,7 +183,7 @@ document.addEventListener('keydown', (event) => {
         hovertarget.style.visibility = 'visible';
         help.style.color = 'white';
     }
-})
+});
 document.addEventListener('keydown', (event) => {
     if(event.key === 'Enter'){
         cbox.style.visibility = 'hidden';
@@ -190,4 +191,4 @@ document.addEventListener('keydown', (event) => {
         hovertarget.style.visibility = 'visible';
         help.style.color = 'white';
     }
-})
+});

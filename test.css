@@ -348,7 +348,7 @@ footer {
 }
 
 .key {
-    transform: scale(0.9px);
+    transform: scale(0.9);
     font-family: "bebas neue";
     background-color: rgb(166, 255, 0);
     font-size: 20px;

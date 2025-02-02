@@ -184,11 +184,19 @@ document.addEventListener('keydown', (event) => {
         help.style.color = 'white';
     }
 });
+
 document.addEventListener('keydown', (event) => {
     if(event.key === 'Enter'){
         cbox.style.visibility = 'hidden';
         cbox.style.zIndex = '-1';
         hovertarget.style.visibility = 'visible';
         help.style.color = 'white';
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if(event.key === 'ArrowLeft' || event.key === 'ArrowRight'){
+        actions[clickCounter]();
+        clickCounter = (clickCounter + 1) % actions.length;
     }
 });

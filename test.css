@@ -560,45 +560,23 @@ label .sinput {
 
 /* Responsive Design */
 @media (max-width: 500px) {
-.body {
-overflow: auto;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-}
-
-.container1 {  
-    transform: scale(1);  
-    width: 200px;  
-    height: 80px;  
-}  
-
-.container2 {  
-    width: 180px;  
-    height: 45px;  
-    font-size: 14px;  
-    padding: 8px;  
-    margin: 5px;  
-}  
-
-.button {  
-    width: 180px;  
-    height: 45px;  
-    font-size: medium;  
-}  
+    .body {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    }
 
 .container3 {  
- 
-    height: 280px;  
-    width: 280px;  
-    padding-top: 20px;  
+    padding: 0%;
+    transform: scale(0.8);  
 }  
 
 .counterBox {  
     transform: scale(1.5);  
-    top: 40px;  
-    font-size: 16px;  
+    margin: 5px
 }  
 
 .title {  
@@ -606,29 +584,27 @@ justify-content: center;
     top: -70px;  
 }  
 
-footer {  
+footer { 
     font-size: 0.7em;  
-    text-align: center;  
+    text-align: left; 
+    margin-left: 20px;
+    transform: scale(1.1); 
 }  
 
 #active-users, #help, #signin {  
-    font-size: 12px;  
-    padding: 8px;  
-    top: 8px;  
+    transform: scale(1.1);  
 }  
 
 #signin {  
-    right: 90px;  
+    margin-right: 15px;  
 }  
 
 .containerbox {  
-    width: 90%;  
-    height: 220px;  
-    padding: 10px;  
+    transform: scale(0.8);
 }  
 
 .auth-container {  
-    width: 80%;  
+    width: 70%;  
     padding: 10px;  
 }  
 

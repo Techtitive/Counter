@@ -6,7 +6,10 @@ const counter = document.querySelector('.counter');
 const title = document.querySelector('.title');
 const viewers = document.querySelector('#active-users');
 const help = document.querySelector('#help');
+const sign = document.querySelector('#signin');
 const cbox = document.querySelector('#containerbox');
+const sbox = document.querySelector('.auth-container');
+const clri = document.querySelector('.container3 i');
 const clr1 = document.querySelector('.clr1');
 const clr2 = document.querySelector('.clr2');
 const clr3 = document.querySelector('.clr3');
@@ -24,6 +27,9 @@ let isKeyPressed = false;
 // === HOVER STATE FLAGS ===
 let isHoveringHovertarget = false;
 let isHoveringCbox = false;
+
+let cboxon = false;
+let sboxon = false;
 // Remove accidental assignment here – we will update these in the proper events
 
 // === HELPER FUNCTION TO UPDATE BACKGROUND ===
@@ -108,6 +114,12 @@ hovertarget.addEventListener('mouseenter', () => {
   viewers.style.backgroundColor = 'white';
   viewers.style.color = 'black';
   help.style.backgroundColor = 'white';
+  sign.style.backgroundColor = 'white';
+  sign.style.color = 'black';
+  clr1.style.visibility = 'visible';
+  clr2.style.visibility = 'visible';
+  clr3.style.visibility = 'visible';
+
   // When hovering the main container, if the help menu is closed then help text should be black.
   if (cbox.style.visibility !== 'visible') {
     help.style.color = 'black';
@@ -117,6 +129,7 @@ hovertarget.addEventListener('mouseenter', () => {
   clr2.style.display = 'block';
   clr3.style.display = 'block';
 });
+
 hovertarget.addEventListener('mouseleave', () => {
   isHoveringHovertarget = false;
   updateBackground();
@@ -127,6 +140,9 @@ hovertarget.addEventListener('mouseleave', () => {
   viewers.style.backgroundColor = 'black';
   viewers.style.color = 'white';
   help.style.backgroundColor = 'black';
+  sign.style.backgroundColor = 'black';
+  sign.style.color = 'white';
+
   // When not hovering, if the help menu is closed then help text becomes white.
   if (cbox.style.visibility !== 'visible') {
     help.style.color = 'white';
@@ -152,6 +168,8 @@ cbox.addEventListener('mouseenter', () => {
   help.style.backgroundColor = 'white';
   // Keep help text red while cbox is open/hovered.
   help.style.color = 'red';
+  sign.style.backgroundColor = 'white';
+  sign.style.color = 'black';
   
   updateBackground();
 });
@@ -169,51 +187,189 @@ cbox.addEventListener('mouseleave', () => {
   footer.style.color = 'black';
   viewers.style.backgroundColor = 'black';
   viewers.style.color = 'white';
-  
-  // Set help text color based on whether hovertarget is hovered.
-  help.style.color = isHoveringHovertarget ? 'black' : 'white';
+  help.style.backgroundColor = 'black';
+  sign.style.backgroundColor = 'black';
+  sign.style.color = 'white';
+  if (cbox.style.visibility == 'visible') {
+    // If cbox is still visible, keep help text red.
+    help.style.color = 'red';
+  }
+
   
   updateBackground();
 });
 
-// === HELP MENU TOGGLE ===
+// === SBOX EVENTS ===
+// When the help box is hovered, we want to simulate that hovertarget is also hovered.
+sbox.addEventListener('mouseenter', () => {
+  isHoveringCbox = true;
+  isHoveringHovertarget = true; // Simulate hovertarget hover when cbox is hovered.
+  
+  // Apply similar hover styling:
+  countertext.style.color = 'white';
+  title.style.color = 'white';
+  footer.style.color = 'white';
+  viewers.style.backgroundColor = 'white';
+  viewers.style.color = 'black';
+  help.style.backgroundColor = 'white';
+  // Keep help text red while cbox is open/hovered.
+  help.style.color = 'red';
+  sign.style.backgroundColor = 'white';
+  sign.style.color = 'black';
+  
+  updateBackground();
+});
+
+sbox.addEventListener('mouseleave', () => {
+  isHoveringCbox = false;
+  // When leaving cbox, check if hovertarget is still hovered.
+  // (Since hovertarget is hidden while cbox is visible, we use the :hover pseudoclass.)
+  if (!hovertarget.matches(':hover')) {
+    isHoveringHovertarget = false;
+  }
+  
+  countertext.style.color = 'black';
+  title.style.color = 'black';
+  footer.style.color = 'black';
+  viewers.style.backgroundColor = 'black';
+  viewers.style.color = 'white';
+  help.style.backgroundColor = 'black';
+  sign.style.backgroundColor = 'black';
+  sign.style.color = 'white';
+  if (cbox.style.visibility == 'visible') {
+    // If cbox is still visible, keep help text red.
+    help.style.color = 'red';
+  }
+
+  
+  updateBackground();
+});
+
+// === HELP MENU TOGGLE ON CLICK ===
 let clicks = 0;
 help.addEventListener('click', () => {
   clicks++;
   if (clicks % 2 === 1) {
-    // Open help menu: show cbox and hide hovertarget.
+    // Open help menu:
     cbox.style.visibility = 'visible';
-    cbox.style.zIndex = '999';
+    cbox.style.zIndex = '1999';
+    // Hide the sign in menu if it is visible:
+    sbox.style.visibility = 'hidden';
+    // Hide the main container:
     hovertarget.style.visibility = 'hidden';
-    // Set help text to red when opened.
     help.style.color = 'red';
+    if (cbox.style.visibility == 'visible') {
+      clr1.style.visibility = 'hidden';
+      clr2.style.visibility = 'hidden';
+      clr3.style.visibility = 'hidden';
+    }
   } else {
-    // Close help menu: hide cbox and show hovertarget.
+    // Close help menu:
     cbox.style.visibility = 'hidden';
-    cbox.style.zIndex = '-1';
+    // Show the main container:
     hovertarget.style.visibility = 'visible';
-    // On closing, if hovertarget (or cbox) was hovered, set help text to black; otherwise, white.
+    // Set help text color based on hover state:
     help.style.color = isHoveringHovertarget ? 'black' : 'white';
+    clr1.style.visibility = 'visible';
+    clr2.style.visibility = 'visible';
+    clr3.style.visibility = 'visible';
+  }
+});
+
+// === DOCUMENT KEYDOWN: TOGGLE HELP MENU (ENTER KEY) ===
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    clicks++;
+    if (clicks % 2 === 1) {
+      // Open help menu:
+      cbox.style.visibility = 'visible';
+      cbox.style.zIndex = '1999';
+      // Also ensure sign in menu is hidden:
+      sbox.style.visibility = 'hidden';
+      hovertarget.style.visibility = 'hidden';
+      help.style.color = 'red';
+      // Hide color elements if needed:
+      clri.style.transition = '0s';            // Set transition duration to 0
+      clri.style.transitionDelay = '0s';       // Set transition delay to 0
+      
+      clr1.style.visibility = 'hidden';
+      clr2.style.visibility = 'hidden';
+      clr3.style.visibility = 'hidden';
+      
+      // (Reapply hover styles if desired)
+      if (isHoveringHovertarget) {
+        countertext.style.color = 'white';
+        title.style.color = 'white';
+        footer.style.color = 'white';
+        viewers.style.backgroundColor = 'white';
+        viewers.style.color = 'black';
+        help.style.backgroundColor = 'white';
+        clr1.style.visibility = 'hidden';
+        clr2.style.visibility = 'hidden';
+        clr3.style.visibility = 'hidden';
+
+      }
+    } else if (clicks % 2 === 0) {
+      // Close help menu:
+      cbox.style.visibility = 'hidden';
+      hovertarget.style.visibility = 'visible';
+      help.style.color = isHoveringHovertarget ? 'black' : 'white';
+      // Show color elements if needed:
+      clr1.style.visibility = 'visible';
+      clr2.style.visibility = 'visible';
+      clr3.style.visibility = 'visible';
+    }
+  }
+});
+
+
+let slicks = 0;
+sign.addEventListener('click', () => {
+  slicks++;
+  if (slicks % 2 === 1) {
+    // Open help menu:
+    sbox.style.visibility = 'visible';
+    sbox.style.zIndex = '1999';
+    // Hide the sign in menu if it is visible:
+    cbox.style.visibility = 'hidden';
+    // Hide the main container:
+    hovertarget.style.visibility = 'hidden';
+    sign.style.color = 'red';
+    if (cbox.style.visibility == 'visible') {
+      clr1.style.visibility = 'hidden';
+      clr2.style.visibility = 'hidden';
+      clr3.style.visibility = 'hidden';
+    }
+  } else {
+    // Close help menu:
+    sbox.style.visibility = 'hidden';
+    // Show the main container:
+    hovertarget.style.visibility = 'visible';
+    // Set help text color based on hover state:
+    sign.style.color = isHoveringHovertarget ? 'black' : 'white';
+    clr1.style.visibility = 'visible';
+    clr2.style.visibility = 'visible';
+    clr3.style.visibility = 'visible';
   }
 });
 
 
 // === DOCUMENT KEYDOWN: CLOSE HELP MENU (ESC & ENTER) ===
-let keynum = 0;
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
-    keynum++;
-    if(keynum%2 === 1) {
-    cbox.style.visibility = 'visible';
-    cbox.style.zIndex = '999';
+  if (event.key === 'Shift') {
+    slicks++;
+    if(slicks%2 === 1) {
+    sbox.style.visibility = 'visible';
+    sbox.style.zIndex = '1999';
     hovertarget.style.visibility = 'hidden';
     // When closing via key shortcut, set help text based on hover state.
-    help.style.color = 'red';
+    sign.style.color = 'red';
     
     // Hide the color elements (if needed)
-    clr1.style.display = 'none';
-    clr2.style.display = 'none';
-    clr3.style.display = 'none';
+    clr1.style.visibility = 'hidden';
+    clr2.style.visibility = 'hidden';
+    clr3.style.visibility = 'hidden';
     
     // Reapply hovertarget hover styles if currently hovered.
      if (isHoveringHovertarget) {
@@ -222,21 +378,21 @@ document.addEventListener('keydown', (event) => {
       footer.style.color = 'white';
       viewers.style.backgroundColor = 'white';
       viewers.style.color = 'black';
-      help.style.backgroundColor = 'white';
+      sign.style.backgroundColor = 'white';
      }
     }
 
-    else if(keynum%2 === 0) {
-      cbox.style.visibility = 'hidden';
-      cbox.style.zIndex = '-1';
+    else if(slicks%2 === 0) {
+      sbox.style.visibility = 'hidden';
       hovertarget.style.visibility = 'visible';
       // When closing via key shortcut, set help text based on hover state.
-      help.style.color = isHoveringHovertarget ? 'black' : 'white';
+      sign.style.color = isHoveringHovertarget ? 'black' : 'white';
       
       // Hide the color elements (if needed)
-      clr1.style.display = 'block';
-      clr2.style.display = 'block';
-      clr3.style.display = 'block';
+      clr1.style.visibility = 'visible';
+      clr2.style.visibility = 'visible';
+      clr3.style.visibility = 'visible';
+
     }
   }
 });
@@ -248,3 +404,33 @@ document.addEventListener('keydown', (event) => {
     clickCounter = (clickCounter + 1) % actions.length;
   }
 });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const passwordInput = document.getElementById("password");
+        const togglePassword = document.getElementById("toggle-password");
+        const show = document.querySelector(".show");
+        const hide = document.querySelector(".hide");
+        let iconclick = 1;
+        passwordInput.addEventListener("input", function () {
+            togglePassword.style.display = this.value ? "inline" : "none";
+        });
+        if (passwordInput.textContent.length !== 0) {
+            togglePassword.style.display = "inline";
+        }
+        togglePassword.addEventListener("click", function () {
+          iconclick++;
+            if (iconclick % 2 === 0) {
+                hide.style.display = "none";
+                show.style.display = "block";
+                passwordInput.type = "text";
+            }
+            else if (iconclick % 2 === 1) {
+                hide.style.display = "block";
+                show.style.display = "none";
+                passwordInput.type = "password";
+                
+            }
+
+        });
+    });

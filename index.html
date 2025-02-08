@@ -3,46 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter</title>
     <link rel="stylesheet" href="test.css">
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-    <title>Website</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="icon" type="image/jpg" href="Images/Logo.jpg">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
 </head>
 <body class="body">
+
     <div class="buttons">
+        <button class="help" id="signin">S</button>
         <button class="help" id="help">?</button>
-    <div class="help" id="active-users">Active Users: 0</div>
+        <div class="help" id="active-users">Active Users: 0</div>
+    </div>
+    
     <main>
         <div class="containerbox" id="containerbox">
-            <h1 class="st" >Shortcuts</h1>
-            <br>
-            <br>
+            <div class="auth-container">
+                <div id="auth-form">
+                    <h2>Counter App</h2>
+                    <input class="sinput" type="email" id="email" placeholder="Email">
+                    <div class="password-wrapper">
+                        <input class="sinput" type="password" id="password" placeholder="Password" lowercase="true" number="true" special="true" minlength="6" maxlength="20"/>
+                        <span class="toggle-password" id="toggle-password"><img width="24" height="24" src="https://img.icons8.com/material-rounded/24/hide.png" alt="hide" class="hide"/><img class="show" width="24" height="24" src="https://img.icons8.com/ios-glyphs/30/visible--v1.png" alt="visible--v1"/></span>
+                    </div>                    
+                    <span><label><input type="checkbox" id="remember-me"> Remember Me</label></span>
+                    <button class="sbutton" onclick="handleSignUp()">Sign Up</button>
+                    <button class="sbutton" onclick="handleSignIn()">Sign In</button>
+                    <p id="auth-message"></p>
+                </div>
+                <div id="auth-status" style="display: none;">
+                    <p>Logged in as: <span id="user-email"></span></p>
+                    <button class="sbutton" onclick="handleSignOut()">Sign Out</button>
+                    <button class="sbutton" onclick="handleChangePassword()">Change Password</button>
+                </div>
+            </div>
+            <h1 class="st">Shortcuts</h1>
+            <br><br>
             <ul>
-                <li class="list1">
-                    Press <span class="key">"Space"</span>, <span class="key">"+"</span> Or <span class="key">"ArrowUP"</span> to increment the counter.
-                </li>
-                <li class="list2">
-                    Press <span class="key">"Enter"</span> to access the Help menu.
-                </li>
-                <li class="list3">
-                    Press <span class="key">"Escape"</span> to close the Help menu.
-                </li>
-                <li class="list4">
-                    Press <span class="key">"ArrowLeft"</span> & <span class="key">"ArrowRight"</span> to change the backgrounf color.
-                </li>
+                <li class="list1">Press <span class="key">"Space"</span>, <span class="key">"+"</span> Or <span class="key">"ArrowUp"</span> to increment the counter.</li>
+                <li class="list2">Press <span class="key">"Enter"</span> to access the Help menu.</li>
+                <li class="list3">Press <span class="key">"Escape"</span> to close the Help menu.</li>
+                <li class="list4">Press <span class="key">"ArrowLeft"</span> & <span class="key">"ArrowRight"</span> to change the background color.</li>
             </ul>
         </div>
+        
         <div class="container3">
             <i class="clr1" style="--clr:#00ff0a;"></i>
             <i class="clr2" style="--clr:#ff0057;"></i>
             <i class="clr3" style="--clr:#fffd44;"></i>
             <h1 class="title">COUNTER</h1>
-            <h1 class="counterBox">Count: 
-                <span class="counter">0</span>
-            </h1>
+            <h1 class="counterBox">Count: <span class="counter">0</span></h1>
             <div class="container1">
                 <div class="border-line"></div>
                 <div class="container2">
@@ -51,14 +69,15 @@
             </div>
         </div>
     </main>
-
+    
     <footer>
-        
-        <h4 class="footertext" >&copy; Reserved 2025</h4>
-     </footer>
-    <!-- Firebase SDK -->
+        <h4 class="footertext">&copy; Reserved 2025</h4>
+    </footer>
+    
+    <!-- Firebase and Other Scripts -->
     <script src="Action.js" defer></script>
     <script src="database.js" type="module"></script>
     <script src="information.js" type="module"></script>
+    <script src="auth.js" type="module"></script>
 </body>
 </html>

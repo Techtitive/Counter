@@ -558,90 +558,87 @@ label .sinput {
 }
 
 /* Responsive Design */
-/* Responsive Design */
 @media (max-width: 500px) {
-    body {
-        margin: 0;
-        overflow: hidden; /* Or overflow: auto; if you want scrolling */
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        font-family: sans-serif;
-        background-color: #f0f0f0;
-    }
+.body {
+overflow: auto;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+}
 
-    .container1 {
-        width: 220px;
-        height: 90px;
-        margin: 10px auto; /* Reduced margin for smaller screens */
-    }
+.container1 {  
+    transform: scale(1);  
+    width: 200px;  
+    height: 80px;  
+}  
 
-    .container2 {
-        width: 190px;
-        height: 50px;
-        font-size: 14px;
-        padding: 10px;
-        margin: 8px auto; /* Adjusted margin */
-        text-align: center;
-    }
+.container2 {  
+    width: 180px;  
+    height: 45px;  
+    font-size: 14px;  
+    padding: 8px;  
+    margin: 5px;  
+}  
 
-    .button {
-        width: 190px;
-        height: 50px;
-        font-size: 14px;
-        padding: 8px;
-        margin: 8px auto; /* Adjusted margin */
-    }
+.button {  
+    width: 180px;  
+    height: 45px;  
+    font-size: medium;  
+}  
 
-    .container3 {
-        flex-grow: 1;
-        width: 90%;
-        margin: 10px auto; /* Reduced margin */
-        padding-top: 10px; /* Reduced padding */
-    }
+.container3 {  
+ 
+    height: 280px;  
+    width: 280px;  
+    padding-top: 20px;  
+}  
 
-    .counterBox {
-        font-size: 16px;
-        margin-top: 10px; /* Reduced margin */
-    }
+.counterBox {  
+    transform: scale(1.5);  
+    top: 40px;  
+    font-size: 16px;  
+}  
 
-    .title {
-        font-size: 1.2em; /* Slightly smaller title */
-        margin-bottom: 8px; /* Reduced margin */
-    }
+.title {  
+    transform: scale(1.3);  
+    top: -70px;  
+}  
 
-    footer {
-        font-size: 0.8em;
-        padding: 8px; /* Reduced padding */
-    }
+footer {  
+    font-size: 0.7em;  
+    text-align: center;  
+}  
 
-    #active-users, #help, #signin {
-        font-size: 12px;
-        padding: 6px; /* Reduced padding */
-        margin: 4px; /* Reduced margin */
-    }
+#active-users, #help, #signin {  
+    font-size: 12px;  
+    padding: 8px;  
+    top: 8px;  
+}  
 
-    .containerbox {
-        width: 95%;
-        height: 200px; /* Slightly smaller container */
-        padding: 10px; /* Reduced padding */
-        margin: 10px auto; /* Reduced margin */
-    }
+#signin {  
+    right: 90px;  
+}  
 
-    .auth-container {
-        width: 85%;
-        padding: 10px; /* Reduced padding */
-        margin: 10px auto; /* Reduced margin */
-    }
+.containerbox {  
+    width: 90%;  
+    height: 220px;  
+    padding: 10px;  
+}  
 
-    .sinput {
-        font-size: 14px;
-        padding: 8px; /* Reduced padding */
-        margin-bottom: 8px; /* Reduced margin */
-    }
+.auth-container {  
+    width: 80%;  
+    padding: 10px;  
+}  
 
-    .sbutton {
-        font-size: 14px;
-        padding: 8px; /* Reduced padding */
-    }
+.sinput {  
+    font-size: 14px;  
+    padding: 8px;  
+}  
+
+.sbutton {  
+    font-size: 14px;  
+    padding: 8px;  
+}
+
 }

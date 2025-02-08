@@ -558,23 +558,22 @@ label .sinput {
 }
 
 /* Responsive Design */
+/* Responsive Design */
 @media (max-width: 500px) {
-    /* Make body fit viewport exactly */
     body {
-        overflow: hidden;
+        margin: 0;
+        overflow: hidden; /* Or overflow: auto; if you want scrolling */
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        padding: 0;
-        margin: 0;
+        min-height: 100vh;
+        font-family: sans-serif;
+        background-color: #f0f0f0;
     }
 
-    /* Adjusting container sizes */
     .container1 {
         width: 220px;
         height: 90px;
+        margin: 10px auto; /* Reduced margin for smaller screens */
     }
 
     .container2 {
@@ -582,74 +581,67 @@ label .sinput {
         height: 50px;
         font-size: 14px;
         padding: 10px;
-        margin: 10px auto; /* Ensuring equal margins */
+        margin: 8px auto; /* Adjusted margin */
         text-align: center;
     }
 
-    .container3 {
-        width: 90%;
-        height: 300px;
-        padding: 20px;
-        margin: 10px auto; /* Same margin as container2 */
-    }
-
-    /* Make button sizes match "Active Users" */
-    .button,
-    #active-users, 
-    #help, 
-    #signin {
+    .button {
         width: 190px;
         height: 50px;
         font-size: 14px;
         padding: 8px;
-        text-align: center;
+        margin: 8px auto; /* Adjusted margin */
     }
 
-    /* Center "signin" */
-    #signin {
-        right: auto;
-        margin: 0 auto;
+    .container3 {
+        flex-grow: 1;
+        width: 90%;
+        margin: 10px auto; /* Reduced margin */
+        padding-top: 10px; /* Reduced padding */
     }
 
-    /* Center title */
-    .title {
-        font-size: 1.3em;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-
-    /* Adjust counter box */
     .counterBox {
         font-size: 16px;
-        position: relative;
-        top: 20px;
+        margin-top: 10px; /* Reduced margin */
     }
 
-    /* Adjusting footer */
+    .title {
+        font-size: 1.2em; /* Slightly smaller title */
+        margin-bottom: 8px; /* Reduced margin */
+    }
+
     footer {
         font-size: 0.8em;
-        text-align: center;
-        padding: 10px;
+        padding: 8px; /* Reduced padding */
     }
 
-    /* Input and button adjustments */
-    .sinput,
-    .sbutton {
-        font-size: 14px;
-        padding: 10px;
-        width: 100%;
+    #active-users, #help, #signin {
+        font-size: 12px;
+        padding: 6px; /* Reduced padding */
+        margin: 4px; /* Reduced margin */
     }
 
-    /* Adjust container box */
     .containerbox {
         width: 95%;
-        height: 220px;
-        padding: 12px;
+        height: 200px; /* Slightly smaller container */
+        padding: 10px; /* Reduced padding */
+        margin: 10px auto; /* Reduced margin */
     }
 
-    /* Auth container */
     .auth-container {
         width: 85%;
-        padding: 12px;
+        padding: 10px; /* Reduced padding */
+        margin: 10px auto; /* Reduced margin */
+    }
+
+    .sinput {
+        font-size: 14px;
+        padding: 8px; /* Reduced padding */
+        margin-bottom: 8px; /* Reduced margin */
+    }
+
+    .sbutton {
+        font-size: 14px;
+        padding: 8px; /* Reduced padding */
     }
 }

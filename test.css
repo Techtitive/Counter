@@ -556,19 +556,22 @@ label .sinput {
 .hide {
     display: block;
 }
-
-
+
 /* Responsive Design */
 @media (max-width: 500px) {
+    /* Make body fit viewport exactly */
     body {
-        overflow: auto;
+        overflow: hidden;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 10px;
+        height: 100vh;
+        padding: 0;
+        margin: 0;
     }
 
+    /* Adjusting container sizes */
     .container1 {
         width: 220px;
         height: 90px;
@@ -579,73 +582,74 @@ label .sinput {
         height: 50px;
         font-size: 14px;
         padding: 10px;
-        margin: 8px auto;
+        margin: 10px auto; /* Ensuring equal margins */
         text-align: center;
     }
 
-    .button {
+    .container3 {
+        width: 90%;
+        height: 300px;
+        padding: 20px;
+        margin: 10px auto; /* Same margin as container2 */
+    }
+
+    /* Make button sizes match "Active Users" */
+    .button,
+    #active-users, 
+    #help, 
+    #signin {
         width: 190px;
         height: 50px;
         font-size: 14px;
         padding: 8px;
+        text-align: center;
     }
 
-    .container3 {
-        height: 300px;
-        width: 90%;
-        padding-top: 20px;
+    /* Center "signin" */
+    #signin {
+        right: auto;
+        margin: 0 auto;
     }
 
-    .counterBox {
-        font-size: 16px;
-        position: relative;
-        top: 20px;
-    }
-
+    /* Center title */
     .title {
         font-size: 1.3em;
         margin-bottom: 10px;
         text-align: center;
     }
 
+    /* Adjust counter box */
+    .counterBox {
+        font-size: 16px;
+        position: relative;
+        top: 20px;
+    }
+
+    /* Adjusting footer */
     footer {
         font-size: 0.8em;
         text-align: center;
         padding: 10px;
     }
 
-    #active-users, #help, #signin {
-        font-size: 12px;
-        padding: 8px;
-        position: relative;
-        top: 8px;
+    /* Input and button adjustments */
+    .sinput,
+    .sbutton {
+        font-size: 14px;
+        padding: 10px;
+        width: 100%;
     }
 
-    #signin {
-        right: auto;
-        margin: 0 auto;
-    }
-
+    /* Adjust container box */
     .containerbox {
         width: 95%;
         height: 220px;
         padding: 12px;
     }
 
+    /* Auth container */
     .auth-container {
         width: 85%;
         padding: 12px;
-    }
-
-    .sinput {
-        font-size: 14px;
-        padding: 10px;
-        width: 100%;
-    }
-
-    .sbutton {
-        font-size: 14px;
-        padding: 10px;
-        width: 100%;
     }
 }

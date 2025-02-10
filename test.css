@@ -562,13 +562,13 @@ label .sinput {
 /* Responsive Design */
 @media (max-width: 500px) {
     .body {
-    height: 100%vh;
+    height: device-height;
     width: device-width;
-    overflow: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin: auto;
     overflow: hidden;
     }
 

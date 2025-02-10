@@ -132,6 +132,7 @@
 {
 	border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
 	animation: animate 6s linear infinite;
+    
 }
 .container3 i:nth-child(2)
 {
@@ -561,6 +562,8 @@ label .sinput {
 /* Responsive Design */
 @media (max-width: 500px) {
     .body {
+    height: 100%vh;
+    width: device-width;
     overflow: auto;
     display: flex;
     flex-direction: column;

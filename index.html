@@ -29,7 +29,7 @@
             <div class="auth-container">
                 <div id="auth-form">
                     <h2>Counter App</h2>
-                    <input class="sinput" type="email" id="email" placeholder="Email">
+                    <input id="input1" class="sinput" type="email" id="email" placeholder="Email">
                     <div class="password-wrapper">
                         <input class="sinput" type="password" id="password" placeholder="Password" lowercase="true" number="true" special="true" minlength="6" maxlength="20"/>
                         <span class="toggle-password" id="toggle-password"><img width="24" height="24" src="https://img.icons8.com/material-rounded/24/hide.png" alt="hide" class="hide"/><img class="show" width="24" height="24" src="https://img.icons8.com/ios-glyphs/30/visible--v1.png" alt="visible--v1"/></span>
@@ -45,14 +45,17 @@
                     <button class="sbutton" onclick="handleChangePassword()">Change Password</button>
                 </div>
             </div>
-            <h1 class="st">Shortcuts</h1>
-            <br><br>
-            <ul>
-                <li class="list1">Press <span class="key">"Space"</span>, <span class="key">"+"</span> Or <span class="key">"ArrowUp"</span> to increment the counter.</li><br>
-                <li class="list2">Press <span class="key">"Enter"</span> to access the Help menu.</li><br>
-                <li class="list3">Press <span class="key">"Escape"</span> to close the Help menu.</li><br>
-                <li class="list4">Press <span class="key">"ArrowLeft"</span> & <span class="key">"ArrowRight"</span> to change the background color.</li><br>
-            </ul>
+            <div class="conbox" id="conbox">
+                <h1 class="st">Shortcuts</h1>
+                <ul class="helpbox">
+                    <li class="list1">Press <span class="key">"Space"</span>, <span class="key">"+"</span> Or <span class="key">"ArrowUp"</span> to increment the counter.</li>
+                    <li class="list2">Press <span class="key">"Enter"</span> to Open & Close the Help menu.</li>
+                    <li class="list3">Press <span class="key">"Shift"</span> to Open & Close the Signin menu.</li>
+                    <li class="list4">Press <span class="key">"ArrowLeft"</span> & <span class="key">"ArrowRight"</span> to change the background color.</li>
+                    <li class="list4">Press <span class="key">"Control"</span> + <span class="key">"c"</span> to show outlines.</li>
+                </ul>
+                <button class="outline">outline</button>
+            </div>
         </div>
         
         <div class="clrcon">

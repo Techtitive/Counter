@@ -726,7 +726,8 @@ label .sinput {
     }  
     
     #active-users {  
-        font-size: 15px;
+        width: 130;
+        font-size: 13.5px;
         right: 10px; /* Adjusted */
         position: absolute;
         padding: 19px 10px;
@@ -734,7 +735,7 @@ label .sinput {
     }
     
     #signin {  
-        right: 140px; /* Prevents overflow */
+        right: 145px; /* Prevents overflow */
         position: absolute;  
     }  
     
@@ -857,7 +858,7 @@ label .sinput {
     }  
     
     #active-users {  
-        width: 120px;
+        width: 125px;
         font-size: 13.5px;
         right: 10px; /* Adjusted */
         position: absolute;
@@ -866,7 +867,7 @@ label .sinput {
     }
     
     #signin {  
-        right: 136px; /* Prevents overflow */
+        right: 141px; /* Prevents overflow */
         position: absolute;  
     }  
     

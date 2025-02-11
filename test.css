@@ -746,7 +746,7 @@ label .sinput {
         height: 100vw;
         padding: 20px;
         width: 100%;  
-        transform: scale(0.8);  
+        transform: scale(0.78);  
         text-align: center;  
         justify-self: center;  
         box-sizing: border-box;
@@ -756,7 +756,7 @@ label .sinput {
         height: 100vw;
         padding: 20px;
         width: 100%;  
-        transform: scale(0.75);  
+        transform: scale(0.80);  
         text-align: center;  
         justify-self: center;  
         box-sizing: border-box;

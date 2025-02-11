@@ -752,6 +752,10 @@ label .sinput {
         padding: 8px;  
     }
     
+    .conbox {  
+        width: 100%;  
+        transform: scale(0.9);  
+    }  
     
 }
 
@@ -771,7 +775,8 @@ label .sinput {
         overflow-y: hidden;
         overflow-x: hidden; /* Prevents horizontal scrolling */
     }
-    
+
+
     .main {  
         display: flex;  
         flex-direction: column;  
@@ -834,6 +839,10 @@ label .sinput {
   
         position: fixed;
         margin-top: 2%;
+        height: 100%;  
+        max-width: 100%;
+        overflow-y: hidden;
+        overflow-x: hidden;
         
         width: calc(100% - 40px); /* Ensures 20px space on both sides */
         left: 10px;

@@ -83,9 +83,9 @@
 }
 
 .container3{
-    height: 480px;
+    height: 440px;
     padding-top: 40px;
-    width: 480px;
+    width: 440px;
     border: solid;
     background-color:transparent;
     border-color: transparent;
@@ -104,6 +104,23 @@
     animation-duration: 5;
 }
 
+.clrcon {
+    padding-top: 0;
+    height: 470px;
+    width: 470px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    padding: 10px 10px;
+    margin: auto;
+    align-items: center;
+    justify-content: center;   
+    align-content: center;
+
+}
+
 .counterBox {
     justify-self: center;
     position: relative;
@@ -119,7 +136,7 @@
     cursor: default;
 }
 
-.container3 i
+.clrcon i
 {
     visibility: hidden;
 	position: absolute;
@@ -129,24 +146,24 @@
 	transition: 0.5s;
     pointer-events: none;
 }
-.container3 i:nth-child(1)
+.clrcon i:nth-child(1)
 {
 	border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
 	animation: animate 6s linear infinite;
     
 }
-.container3 i:nth-child(2)
+.clrcon i:nth-child(2)
 {
 	border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
 	animation: animate 4s linear infinite;
 }
-.container3 i:nth-child(3)
+.clrcon i:nth-child(3)
 {
 	border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
 	animation: animate2 10s linear infinite;
 }
 
-.container3:hover i {
+.clrcon:hover i {
     border: 6px solid var(--clr);
     filter: drop-shadow(0 0 20px var(--clr));
     opacity: 1; /* Fade-in effect */
@@ -599,10 +616,22 @@ label .sinput {
         justify-content: center;
     }
     
+
     .container3 {  
-        padding: 0;
+        height: 100vw;
+        padding: 20px;
         width: 100%;  
-        transform: scale(0.7);  
+        transform: scale(0.9);  
+        text-align: center;  
+        justify-self: center;  
+        box-sizing: border-box;
+    }  
+
+    .clrcon {  
+        height: 100vw;
+        padding: 20px;
+        width: 100%;  
+        transform: scale(0.85);  
         text-align: center;  
         justify-self: center;  
         box-sizing: border-box;
@@ -666,8 +695,6 @@ label .sinput {
         font-size: 14px;  
         padding: 8px;  
     }
-    
-
     
     
 }

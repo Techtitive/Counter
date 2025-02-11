@@ -571,6 +571,8 @@ label .sinput {
         justify-content: center;  
         margin: 0;  /* Corrected margin */
         padding: 0;
+        zoom: 0%;
+        overflow-y: hidden;
         overflow-x: hidden; /* Prevents horizontal scrolling */
     }
     
@@ -594,7 +596,7 @@ label .sinput {
     .container3 {  
         padding: 0;
         width: 100%;  
-        transform: scale(0.6);  
+        transform: scale(0.7);  
         text-align: center;  
         justify-self: center;  
     }  
@@ -647,12 +649,11 @@ label .sinput {
         padding: 8px;  
     }
     
-    /* Debugging: Uncomment this to find overflow issues */
-    /*
+
     * {
         outline: 1px solid red;
     }
-    */
+   
     
     }
     

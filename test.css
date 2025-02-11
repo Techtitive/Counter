@@ -588,7 +588,8 @@ label .sinput {
         justify-content: center;  
         margin: auto;  
         overflow: hidden;  
-        width: 100%;
+        width: 100vw;
+        
     }
     
     .container3-wrapper {
@@ -604,8 +605,9 @@ label .sinput {
         transform: scale(0.7);  
         text-align: center;  
         justify-self: center;  
+        box-sizing: border-box;
     }  
-    
+
     .counterBox {  
         transform: scale(1.5);  
         margin: 5px;  
@@ -634,12 +636,16 @@ label .sinput {
     }  
     
     #active-users, #help, #signin {  
-        transform: scale(1.1);  
+        transform: scale(1.1); 
+        box-sizing: border-box; 
     }  
     
     #active-users {  
+        font-size: 15px;
         right: 10px; /* Adjusted */
         position: absolute;
+        padding: 19px 10px;
+        
     }
     
     #signin {  
@@ -669,4 +675,5 @@ label .sinput {
 
 * {
     outline: 1px solid red;
+
 }

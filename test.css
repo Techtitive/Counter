@@ -743,7 +743,7 @@ label .sinput {
         height: 100vw;
         padding: 20px;
         width: 100%;  
-        transform: scale(0.9);  
+        transform: scale(0.8);  
         text-align: center;  
         justify-self: center;  
         box-sizing: border-box;
@@ -753,7 +753,7 @@ label .sinput {
         height: 100vw;
         padding: 20px;
         width: 100%;  
-        transform: scale(0.85);  
+        transform: scale(7.5);  
         text-align: center;  
         justify-self: center;  
         box-sizing: border-box;

@@ -632,7 +632,6 @@ label .sinput {
         width: calc(100% - 40px); /* Ensures 20px space on both sides */
         left: 10px;
         right: 20px; /* Ensures it doesn’t overflow */
-        display: none;
     }  
     
     #active-users, #help, #signin {  

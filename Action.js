@@ -1,5 +1,5 @@
 // === ELEMENT SELECTION ===
-const hovertarget = document.querySelector('.container3');
+const hovertarget = document.querySelector('.clrcon');
 const clicktarget = document.querySelector('.button');
 const countertext = document.querySelector('.counterBox');
 const counter = document.querySelector('.counter');
@@ -9,7 +9,7 @@ const help = document.querySelector('#help');
 const sign = document.querySelector('#signin');
 const cbox = document.querySelector('#containerbox');
 const sbox = document.querySelector('.auth-container');
-const clri = document.querySelector('.container3 i');
+const clri = document.querySelector('.clrcon i');
 const clr1 = document.querySelector('.clr1');
 const clr2 = document.querySelector('.clr2');
 const clr3 = document.querySelector('.clr3');
@@ -434,3 +434,6 @@ document.addEventListener('keydown', (event) => {
 
         });
     });
+
+
+

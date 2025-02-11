@@ -703,7 +703,7 @@ label .sinput {
     outline: 1px solid red;
 
 }
-@media (max-width: 392) {
+@media (max-width: 400px) {
     
     body {  
         height: 100%;  
@@ -731,6 +731,9 @@ label .sinput {
         
     }
     
+    .footertext {
+        padding-left: 5px;
+    }
     .container3-wrapper {
         width: 100%;
         overflow: hidden;
@@ -753,7 +756,7 @@ label .sinput {
         height: 100vw;
         padding: 20px;
         width: 100%;  
-        transform: scale(7.5);  
+        transform: scale(0.75);  
         text-align: center;  
         justify-self: center;  
         box-sizing: border-box;

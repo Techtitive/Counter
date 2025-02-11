@@ -640,6 +640,7 @@ label .sinput {
 @media (max-width: 600px) {
     
     body {  
+        box-sizing: border-box;
         height: 100%;  
         max-width: 100%; /* Prevents horizontal overflow */
         display: flex;  
@@ -762,6 +763,7 @@ label .sinput {
 @media (max-width: 400px) {
     
     body {  
+        box-sizing: border-box;
         height: 100%;  
         max-width: 100%; /* Prevents horizontal overflow */
         display: flex;  

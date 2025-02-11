@@ -576,6 +576,7 @@ label .sinput {
         margin: 0;  /* Corrected margin */
         padding: 0;
         zoom: 0%;
+        outline: #50f5cc solid 1px;
         overflow-y: hidden;
         overflow-x: hidden; /* Prevents horizontal scrolling */
     }
@@ -629,7 +630,7 @@ label .sinput {
         width: calc(100% - 40px); /* Ensures 20px space on both sides */
         left: 10px;
         right: 20px; /* Ensures it doesn’t overflow */
-        
+        display: none;
     }  
     
     #active-users, #help, #signin {  

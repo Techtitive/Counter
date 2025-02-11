@@ -563,6 +563,7 @@ label .sinput {
 @media (max-width: 500px) {
 
     .body {
+    width: fill;
     height: 100%;
     max-width: 100vw;
     display: flex;
@@ -612,6 +613,10 @@ footer {
     transform: scale(1.1);  
 }  
 
+#active-users {
+    right: 0%;
+}
+
 #signin {  
     right: 0%;
     margin-right: 135px;
@@ -621,7 +626,6 @@ footer {
 .containerbox { 
     width: 100%; 
     transform: scale(0.8);
-    right: 0%;
 }  
 
 .auth-container {  

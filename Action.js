@@ -7,13 +7,14 @@ const title = document.querySelector('.title');
 const viewers = document.querySelector('#active-users');
 const help = document.querySelector('#help');
 const sign = document.querySelector('#signin');
-const cbox = document.querySelector('#containerbox');
+const cbox = document.querySelector('#conbox');
 const sbox = document.querySelector('.auth-container');
 const clri = document.querySelector('.clrcon i');
 const clr1 = document.querySelector('.clr1');
 const clr2 = document.querySelector('.clr2');
 const clr3 = document.querySelector('.clr3');
 const footer = document.querySelector('.footertext');
+const all = document.querySelectorAll('*');
 const body = document.body;
 
 // === INITIALIZE COUNTER ===
@@ -356,43 +357,58 @@ sign.addEventListener('click', () => {
 
 
 // === DOCUMENT KEYDOWN: CLOSE HELP MENU (ESC & ENTER) ===
+const input1 = document.getElementById('input1');
+const input2 = document.getElementById('password');
+
+let inputHovered = false; // Flag to track if either input is hovered
+
+// Update the flag when input1 is hovered
+input1.addEventListener('mouseenter', () => { inputHovered = true; });
+input1.addEventListener('mouseleave', () => { inputHovered = false; });
+
+// Update the flag when input2 is hovered
+input2.addEventListener('mouseenter', () => { inputHovered = true; });
+input2.addEventListener('mouseleave', () => { inputHovered = false; });
+
+// Listen for keydown events on the document
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Shift') {
-    slicks++;
-    if(slicks%2 === 1) {
-    sbox.style.visibility = 'visible';
-    sbox.style.zIndex = '1999';
-    hovertarget.style.visibility = 'hidden';
-    // When closing via key shortcut, set help text based on hover state.
-    sign.style.color = 'red';
-    
-    // Hide the color elements (if needed)
-    clr1.style.visibility = 'hidden';
-    clr2.style.visibility = 'hidden';
-    clr3.style.visibility = 'hidden';
-    
-    // Reapply hovertarget hover styles if currently hovered.
-     if (isHoveringHovertarget) {
-      countertext.style.color = 'white';
-      title.style.color = 'white';
-      footer.style.color = 'white';
-      viewers.style.backgroundColor = 'white';
-      viewers.style.color = 'black';
-      sign.style.backgroundColor = 'white';
-     }
+    // Ignore Shift if either input is hovered or is focused (i.e. you're typing in it)
+    if (inputHovered || event.target === input1 || event.target === input2) {
+      return;
     }
-
-    else if(slicks%2 === 0) {
+    
+    slicks++;
+    
+    if (slicks % 2 === 1) {
+      sbox.style.visibility = 'visible';
+      sbox.style.zIndex = '1999';
+      hovertarget.style.visibility = 'hidden';
+      sign.style.color = 'red';
+      
+      // Hide the color elements
+      clr1.style.visibility = 'hidden';
+      clr2.style.visibility = 'hidden';
+      clr3.style.visibility = 'hidden';
+      
+      // Reapply hovertarget hover styles if currently hovered.
+      if (isHoveringHovertarget) {
+        countertext.style.color = 'white';
+        title.style.color = 'white';
+        footer.style.color = 'white';
+        viewers.style.backgroundColor = 'white';
+        viewers.style.color = 'black';
+        sign.style.backgroundColor = 'white';
+      }
+    } else {
       sbox.style.visibility = 'hidden';
       hovertarget.style.visibility = 'visible';
-      // When closing via key shortcut, set help text based on hover state.
       sign.style.color = isHoveringHovertarget ? 'black' : 'white';
       
-      // Hide the color elements (if needed)
+      // Show the color elements
       clr1.style.visibility = 'visible';
       clr2.style.visibility = 'visible';
       clr3.style.visibility = 'visible';
-
     }
   }
 });
@@ -435,5 +451,39 @@ document.addEventListener('keydown', (event) => {
         });
     });
 
+    let out = 0;
+    const outlineBtn = document.querySelector('.outline'); // The button element
+    // Select all elements on the page
+    const allElements = document.querySelectorAll('*');
+    
+    outlineBtn.addEventListener("click", () => {
+      out++;
+      if (out % 2 === 1) {
+        // Apply red outline to each element
+        allElements.forEach(el => {
+          el.style.outline = "1px solid red";
+        });
+      } else {
+        // Remove the outline by clearing the inline style
+        allElements.forEach(el => {
+          el.style.outline = "";
+        });
+      }
+    });
 
-
+    document.addEventListener('keydown', function(event) {
+      if (event.ctrlKey && (event.key === 'c' || event.key === 'C')) {
+        out++;
+        if (out%2 === 1){
+          allElements.forEach(el => {
+            el.style.outline = "1px solid red";
+          });
+        } else {
+          // Remove the outline by clearing the inline style
+          allElements.forEach(el => {
+            el.style.outline = "";
+          });
+        }
+      }
+    }
+    )

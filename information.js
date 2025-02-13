@@ -1,4 +1,6 @@
-// Import Firebase modules
+// =====================================================
+// 1. IMPORTS & FIREBASE INITIALIZATION
+// =====================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
 import {
   getFirestore,
@@ -8,15 +10,19 @@ import {
   deleteDoc,
   onSnapshot,
   getDoc,
+  getDocs,
   query,
   where,
 } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 import {
   getAuth,
   onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updatePassword,
 } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
-// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyA2axhnlDhVTv5ac5GUpX99rgQQoj0-uXw",
   authDomain: "techtitive-counter.firebaseapp.com",
@@ -27,12 +33,13 @@ const firebaseConfig = {
   measurementId: "G-0C5VJE3VPW",
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Constants
+// =====================================================
+// 2. GLOBAL CONSTANTS & VARIABLES
+// =====================================================
 const AFK_TIMEOUT_MS = 60 * 60 * 1000; // 1 hour
 let afkTimeout;
 let userId = null;
@@ -40,13 +47,17 @@ let userName = "Guest";
 let deviceId = localStorage.getItem("deviceId") || null; // Persist device ID
 let tabId = sessionStorage.getItem("tabId") || null; // Unique ID for each tab
 
-// Generate a unique tab ID
+// For per‑tab counting (in‑memory only – resets for each new tab)
+let tabClicks = 0;
+
 if (!tabId) {
   tabId = `Tab-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
   sessionStorage.setItem("tabId", tabId);
 }
 
-// Function to generate a unique device ID
+// =====================================================
+// 3. UTILITY FUNCTIONS
+// =====================================================
 function generateDeviceID(existingDevices) {
   const deviceNumbers = Object.keys(existingDevices)
     .map((key) => parseInt(key.replace("Device-", "")))
@@ -55,7 +66,6 @@ function generateDeviceID(existingDevices) {
   return `Device-${nextDeviceNum}`;
 }
 
-// Get device and browser info
 function getDeviceInfo() {
   const userAgent = navigator.userAgent;
   const platform = navigator.platform;
@@ -75,96 +85,83 @@ function detectBrowser(userAgent) {
   return "Unknown";
 }
 
-// Save click data to local storage
-function saveClickDataToLocal(deviceId, tabId, clicks) {
-  const key = `clickData_${deviceId}_${tabId}`;
-  localStorage.setItem(key, JSON.stringify({ clicks }));
+// =====================================================
+// 4. LOCAL STORAGE HELPERS (OVERALL TOTAL ONLY)
+// =====================================================
+function saveTotalClicksToLocal(emailOrId, totalClicks) {
+  localStorage.setItem(`totalClicks_${emailOrId}`, totalClicks);
 }
 
-// Retrieve click data from local storage
-function getClickDataFromLocal(deviceId, tabId) {
-  const key = `clickData_${deviceId}_${tabId}`;
-  const data = localStorage.getItem(key);
-  return data ? JSON.parse(data).clicks : 0;
-}
-
-// Save total click count to local storage
-function saveTotalClicksToLocal(totalClicks) {
-  localStorage.setItem("totalClicks", totalClicks);
-}
-
-// Retrieve total click count from local storage
-function getTotalClicksFromLocal() {
-  const data = localStorage.getItem("totalClicks");
+function getTotalClicksFromLocal(emailOrId) {
+  const data = localStorage.getItem(`totalClicks_${emailOrId}`);
   return data ? parseInt(data, 10) : 0;
 }
 
-// Track user clicks
+// =====================================================
+// 5. MAIN FUNCTIONALITY
+// =====================================================
+
 document.addEventListener("click", async () => {
+  // --- Overall total (persistent across sessions) ---
   const user = auth.currentUser;
-  const userDocRef = doc(db, "clickData", user ? user.email : `${userId}`);
+  const emailOrId = user ? user.email : userId;
+  const userDocRef = doc(db, "clickData", emailOrId);
   const timestamp = new Date();
   const existingDoc = await getDoc(userDocRef);
   let userData = existingDoc.exists() ? existingDoc.data() : {};
 
-  // Generate device ID only once per device
+  // Generate device ID if not already set
   if (!deviceId) {
     const existingDevices = userData["7. Devices"] || {};
     deviceId = generateDeviceID(existingDevices);
     localStorage.setItem("deviceId", deviceId);
   }
 
-  // Update device-specific data
+  // --- Per-device and per-tab counting ---
+  // For each new tab (each tab session), we start with tabClicks = 0 (set on page load)
+  // Increment the in-memory tabClicks variable
+  tabClicks++;
+
+  // Update the current device's tab data in Firestore using the in-memory value
   const currentDeviceData = userData["7. Devices"]?.[deviceId] || {
     clicks: 0,
     Tabs: 0,
-    deviceInfo: getDeviceInfo(), // Store device info here
+    deviceInfo: getDeviceInfo(),
     tabs: {},
   };
 
-  // Get existing clicks from local storage or default to 0
-  const existingClicks = getClickDataFromLocal(deviceId, tabId);
-
-  // Update the specific tab within the device's tabs
   currentDeviceData.tabs[tabId] = {
-    clicks: existingClicks + 1, // Increment clicks for the tab
+    clicks: tabClicks, // Use our in-memory counter for this tab
     lastActive: timestamp,
   };
 
-  // Save updated click count to local storage
-  saveClickDataToLocal(deviceId, tabId, currentDeviceData.tabs[tabId].clicks);
-
-  // Aggregate device-level clicks
+  // Recalculate device-level totals from tab data
   currentDeviceData.clicks = Object.values(currentDeviceData.tabs).reduce(
     (sum, tab) => sum + tab.clicks,
     0
   );
-
-  // Update the total number of tabs for the device
   currentDeviceData.Tabs = Object.keys(currentDeviceData.tabs).length;
 
-  // Update the user's devices
+  // Update the user's devices object
   userData["7. Devices"] = {
-    ...userData["7. Devices"], // Preserve existing devices
-    [deviceId]: currentDeviceData, // Update the specific device
+    ...userData["7. Devices"],
+    [deviceId]: currentDeviceData,
   };
 
-  // Calculate total clicks
-  userData["1. TotalClicks"] = Object.values(userData["7. Devices"]).reduce(
-    (sum, device) => sum + device.clicks,
-    0
-  );
+  // --- Overall total updates ---
+  let overallTotal = getTotalClicksFromLocal(emailOrId); // Load saved overall total (or 0 if new)
+  overallTotal = overallTotal + 1;                         // Increment overall total by 1
+  saveTotalClicksToLocal(emailOrId, overallTotal);         // Save updated overall total to local storage
+  userData["1. TotalClicks"] = overallTotal;               // Update overall total in Firestore data
+  // *********************************************************
 
-  // Save total clicks to local storage
-  saveTotalClicksToLocal(userData["1. TotalClicks"]);
-
-  // Calculate total tabs
+  // Recalculate total tabs across all devices
   userData["4. Tabs"] = Object.values(userData["7. Devices"]).reduce(
     (sum, device) => sum + device.Tabs,
     0
   );
 
-  // Update Firestore
+  // Update Firestore with the new values
   await setDoc(
     userDocRef,
     {
@@ -180,55 +177,26 @@ document.addEventListener("click", async () => {
   );
 });
 
-// Remove inactive users or devices
+// ----- Remove User on Leave -----
+// FIXED REMOVE FUNCTION: When the user leaves, remove the entire "clickData" collection immediately.
 async function removeUser() {
   clearTimeout(afkTimeout);
-  const user = auth.currentUser;
-  const userDocRef = doc(db, "clickData", user ? user.email : `${userId}`);
-  const userDoc = await getDoc(userDocRef);
-  if (userDoc.exists()) {
-    const userData = userDoc.data();
-    const devices = userData["7. Devices"] || {};
-
-    // Remove the current tab from the device
-    if (devices[deviceId]?.tabs?.[tabId]) {
-      delete devices[deviceId].tabs[tabId];
-      // Remove click data from local storage
-      const key = `clickData_${deviceId}_${tabId}`;
-      localStorage.removeItem(key);
-
-      // If no tabs left in the device, remove the device
-      if (Object.keys(devices[deviceId].tabs).length === 0) {
-        delete devices[deviceId];
-      }
-
-      await setDoc(
-        userDocRef,
-        {
-          "7. Devices": devices,
-          "1. TotalClicks": Object.values(devices).reduce(
-            (sum, device) => sum + device.clicks,
-            0
-          ),
-          "4. Tabs": Object.values(devices).reduce(
-            (sum, device) => sum + device.Tabs,
-            0
-          ),
-          "5. DeviceCount": Object.keys(devices).length,
-        },
-        { merge: true }
-      );
-    }
-
-    // If no devices left, remove the user entirely
-    if (Object.keys(devices).length === 0) {
-      await deleteDoc(userDocRef);
-      console.log("User removed from database.");
-    }
+  try {
+    const allUsersCollection = collection(db, "clickData");
+    const snapshot = await getDocs(allUsersCollection);
+    const deletePromises = snapshot.docs.map(docSnapshot => 
+      deleteDoc(doc(db, "clickData", docSnapshot.id))
+    );
+    await Promise.all(deletePromises);
+    console.log("Entire database removed because the user left.");
+  } catch (error) {
+    console.error("Error removing database:", error);
   }
+  // Clear local storage for the current tab so a new tab will start from 0
+  localStorage.removeItem(`tab_${tabId}`);
 }
 
-// Cleanup inactive users
+// ----- Cleanup Inactive Users -----
 async function cleanupInactiveUsers() {
   try {
     const oneHourAgo = new Date(Date.now() - AFK_TIMEOUT_MS);
@@ -237,47 +205,38 @@ async function cleanupInactiveUsers() {
       where("6. Online", "==", true)
     );
     const inactiveSnapshots = await getDocs(inactiveUsersQuery);
-
     for (const userDoc of inactiveSnapshots.docs) {
       const userData = userDoc.data();
       const devices = userData["7. Devices"] || {};
-
-      // Remove tabs and devices that haven't been active for more than 1 hour
       const updatedDevices = Object.entries(devices).reduce((acc, [id, device]) => {
-        const updatedTabs = Object.entries(device.tabs).reduce((tabAcc, [tabId, tab]) => {
+        const updatedTabs = Object.entries(device.tabs || {}).reduce((tabAcc, [tabId, tab]) => {
           const lastActive = tab.lastActive?.toDate() || new Date(0);
           if (lastActive > oneHourAgo) {
             tabAcc[tabId] = tab;
           } else {
-            // Remove click data from local storage
-            const key = `clickData_${id}_${tabId}`;
-            localStorage.removeItem(key);
+            localStorage.removeItem(`tab_${tabId}`);
           }
           return tabAcc;
         }, {});
-
         if (Object.keys(updatedTabs).length > 0) {
           acc[id] = { ...device, tabs: updatedTabs };
         }
         return acc;
       }, {});
-
       if (Object.keys(updatedDevices).length === 0) {
-        // No active devices left, delete the user
         await deleteDoc(doc(db, "clickData", userDoc.id));
         console.log("Inactive user removed:", userDoc.id);
       } else {
-        // Update the user's devices
         await setDoc(
           userDoc.ref,
           {
             "7. Devices": updatedDevices,
             "1. TotalClicks": Object.values(updatedDevices).reduce(
-              (sum, device) => sum + device.clicks,
+              (sum, device) => sum + (device.clicks || 0),
               0
             ),
             "4. Tabs": Object.values(updatedDevices).reduce(
-              (sum, device) => sum + device.Tabs,
+              (sum, device) => sum + (device.Tabs || 0),
               0
             ),
             "5. DeviceCount": Object.keys(updatedDevices).length,
@@ -291,11 +250,11 @@ async function cleanupInactiveUsers() {
   }
 }
 
-// Track active users and update the count
+// ----- Track Active Users (for display) -----
 function trackUsers() {
   const liveUsersCollection = collection(db, "clickData");
   onSnapshot(liveUsersCollection, (snapshot) => {
-    const activeUsers = snapshot.docs.length - 1;
+    const activeUsers = snapshot.docs.length;
     const counterElement = document.getElementById("active-users");
     if (counterElement) {
       counterElement.textContent = `Active Users: ${activeUsers}`;
@@ -303,14 +262,12 @@ function trackUsers() {
   });
 }
 
-// Monitor inactivity
+// ----- Activity Monitoring & Marking Active -----
 let lastActivity = Date.now();
-
 function logActivity() {
   lastActivity = Date.now();
-  markActive(); // Ensure the user is marked as active
+  markActive();
 }
-
 function monitorActivity() {
   const now = Date.now();
   if (now - lastActivity > AFK_TIMEOUT_MS) {
@@ -318,89 +275,89 @@ function monitorActivity() {
   }
 }
 
-// Handle authentication state changes
+// ----- Authentication State Handling -----
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    // Remove guest data when logging in
     const guestDocRef = doc(db, "clickData", `${userId}`);
-    await deleteDoc(guestDocRef);
-
-    // Update user details
+    await deleteDoc(guestDocRef).catch(() => {});
+    userId = user.email;
+    userName = user.displayName || "Unnamed User";
+    const totalFromLocal = getTotalClicksFromLocal(user.email);
+    const userDocRef = doc(db, "clickData", user.email);
+    const existingDoc = await getDoc(userDocRef);
+    if (!existingDoc.exists()) {
+      await setDoc(
+        userDocRef,
+        {
+          "1. TotalClicks": totalFromLocal,
+          "2. Email": user.email,
+          "3. Name": user.displayName || "Unnamed User",
+          "4. Tabs": 0,
+          "5. DeviceCount": 0,
+          "6. Online": true,
+          "7. Devices": {},
+        },
+        { merge: true }
+      );
+    }
     userId = user.email;
     userName = user.displayName || "Unnamed User";
   } else {
-    userId = `${Date.now()}`; // Use numeric ID for guests
+    userId = `${Date.now()}`;
     userName = userId;
   }
   await markActive();
 });
 
-// Function to mark the user as active
+// ----- Mark User as Active (Update Firestore) -----
+// On any activity, update the user's Firestore document with the saved overall total.
 async function markActive() {
   clearTimeout(afkTimeout);
-  afkTimeout = setTimeout(async () => {
-    await removeUser();
+  afkTimeout = setTimeout(() => {
+    removeUser();
   }, AFK_TIMEOUT_MS);
-
   const user = auth.currentUser;
-  const userDocRef = doc(db, "clickData", user ? user.email : `${userId}`);
+  const emailOrId = user ? user.email : userId;
+  const userDocRef = doc(db, "clickData", emailOrId);
   const deviceInfo = getDeviceInfo();
   const timestamp = new Date();
   const existingDoc = await getDoc(userDocRef);
   let userData = existingDoc.exists() ? existingDoc.data() : {};
-
-  // Generate device ID only once per device
   if (!deviceId) {
     const existingDevices = userData["7. Devices"] || {};
     deviceId = generateDeviceID(existingDevices);
     localStorage.setItem("deviceId", deviceId);
   }
-
-  // Update device-specific data
   const currentDeviceData = userData["7. Devices"]?.[deviceId] || {
     clicks: 0,
     Tabs: 0,
-    deviceInfo: deviceInfo, // Store device info here
+    deviceInfo: deviceInfo,
     tabs: {},
   };
-
-  // Update the specific tab within the device's tabs
   currentDeviceData.tabs[tabId] = {
-    clicks: (currentDeviceData.tabs[tabId]?.clicks || 0),
+    clicks: currentDeviceData.tabs[tabId]?.clicks || 0,
     lastActive: timestamp,
   };
-
-  // Aggregate device-level clicks
   currentDeviceData.clicks = Object.values(currentDeviceData.tabs).reduce(
     (sum, tab) => sum + tab.clicks,
     0
   );
-
-  // Update the total number of tabs for the device
   currentDeviceData.Tabs = Object.keys(currentDeviceData.tabs).length;
-
-  // Update the user's devices
   userData["7. Devices"] = {
-    ...userData["7. Devices"], // Preserve existing devices
-    [deviceId]: currentDeviceData, // Update the specific device
+    ...userData["7. Devices"],
+    [deviceId]: currentDeviceData,
   };
-
-  // Calculate total clicks
   userData["1. TotalClicks"] = Object.values(userData["7. Devices"]).reduce(
     (sum, device) => sum + device.clicks,
     0
   );
-
-  // Save total clicks to local storage
-  saveTotalClicksToLocal(userData["1. TotalClicks"]);
-
-  // Calculate total tabs
   userData["4. Tabs"] = Object.values(userData["7. Devices"]).reduce(
     (sum, device) => sum + device.Tabs,
     0
   );
-
-  // Update Firestore
+  const savedTotal = getTotalClicksFromLocal(emailOrId);
+  userData["1. TotalClicks"] = savedTotal;
+  saveTotalClicksToLocal(emailOrId, userData["1. TotalClicks"]);
   await setDoc(
     userDocRef,
     {
@@ -416,38 +373,29 @@ async function markActive() {
   );
 }
 
-// Initialize app logic
+// =====================================================
+// 6. INITIALIZATION & EVENT LISTENERS
+// =====================================================
 async function initializeAppLogic() {
-  // Track active users
   trackUsers();
-
-  // Initialize click counts from local storage
   if (deviceId && tabId) {
-    const existingClicks = getClickDataFromLocal(deviceId, tabId);
-    console.log(`Loaded ${existingClicks} clicks from local storage for tab ${tabId}`);
+    console.log(`Loaded ${getClickDataFromLocal(tabId)} clicks from local storage for tab ${tabId}`);
   }
-
-  // Initialize total clicks from local storage
-  const totalClicks = getTotalClicksFromLocal();
-  console.log(`Loaded total clicks from local storage: ${totalClicks}`);
-
-  // Remove user when they leave the page
-  window.addEventListener("beforeunload", async () => {
-    await removeUser();
+  const user = auth.currentUser;
+  const emailOrId = user ? user.email : userId;
+  console.log(`Loaded total clicks from local storage for user ${emailOrId}: ${getTotalClicksFromLocal(emailOrId)}`);
+  window.addEventListener("beforeunload", () => {
+    removeUser();
   });
-
-  // Monitor user activity
+  window.addEventListener("unload", () => {
+    removeUser();
+  });
   const events = ["mousemove", "keydown", "touchstart"];
-  events.forEach((event) => {
-    document.addEventListener(event, logActivity);
+  events.forEach((eventName) => {
+    document.addEventListener(eventName, logActivity);
   });
-
-  // Start inactivity monitoring
-  setInterval(monitorActivity, 60 * 1000); // Check every minute
-
-  // Periodically clean up inactive users
-  setInterval(cleanupInactiveUsers, 5 * 60 * 1000); // Every 5 minutes
+  setInterval(monitorActivity, 60 * 1000);
+  setInterval(cleanupInactiveUsers, 5 * 60 * 1000);
 }
 
-// Start the application logic
 initializeAppLogic();

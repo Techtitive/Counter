@@ -357,14 +357,14 @@ sign.addEventListener('click', () => {
 
 
 // === DOCUMENT KEYDOWN: CLOSE HELP MENU (ESC & ENTER) ===
-const input1 = document.getElementById('input1');
+const email = document.getElementById('email');
 const input2 = document.getElementById('password');
 
 let inputHovered = false; // Flag to track if either input is hovered
 
-// Update the flag when input1 is hovered
-input1.addEventListener('mouseenter', () => { inputHovered = true; });
-input1.addEventListener('mouseleave', () => { inputHovered = false; });
+// Update the flag when email is hovered
+email.addEventListener('mouseenter', () => { inputHovered = true; });
+email.addEventListener('mouseleave', () => { inputHovered = false; });
 
 // Update the flag when input2 is hovered
 input2.addEventListener('mouseenter', () => { inputHovered = true; });
@@ -374,7 +374,7 @@ input2.addEventListener('mouseleave', () => { inputHovered = false; });
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Shift') {
     // Ignore Shift if either input is hovered or is focused (i.e. you're typing in it)
-    if (inputHovered || event.target === input1 || event.target === input2) {
+    if (inputHovered || event.target === email || event.target === input2) {
       return;
     }
     

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
     <title>Counter</title>
     <link rel="stylesheet" href="test.css">
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
@@ -19,17 +19,16 @@
 <body class="body">
 
     <div class="buttons">
-        <button class="help" id="signin">S</button>
+        <button class="help" id="signin" >S</button>
         <button class="help" id="help">?</button>
         <div class="help" id="active-users">Active Users: 0</div>
     </div>
     
-    <main class="main">
         <div class="containerbox" id="containerbox">
             <div class="auth-container">
                 <div id="auth-form">
                     <h2>Counter App</h2>
-                    <input id="input1" class="sinput" type="email" id="email" placeholder="Email">
+                    <input class="sinput" type="email" id="email" placeholder="Email">
                     <div class="password-wrapper">
                         <input class="sinput" type="password" id="password" placeholder="Password" lowercase="true" number="true" special="true" minlength="6" maxlength="20"/>
                         <span class="toggle-password" id="toggle-password"><img width="24" height="24" src="https://img.icons8.com/material-rounded/24/hide.png" alt="hide" class="hide"/><img class="show" width="24" height="24" src="https://img.icons8.com/ios-glyphs/30/visible--v1.png" alt="visible--v1"/></span>
@@ -73,11 +72,8 @@
                 </div>
             </div>
         </div>
-    </main>
     
-    <footer>
         <h4 class="footertext">&copy; Reserved 2025</h4>
-    </footer>
     
     <!-- Firebase and Other Scripts -->
     <script src="Action.js" defer></script>

@@ -81,6 +81,10 @@
     transform: scale(0.95);
 }
 
+*::-webkit-scrollbar{
+    display: none;
+}
+
 .container3{
     height: 440px;
     padding-top: 40px;
@@ -834,18 +838,10 @@ label .sinput {
       top: -70px;  
     }  
     
-    footer {  
-      font-size: 0.7em;  
-      text-align: left;  
-      transform: scale(1.1);  
-      height: 15px;
-      position: fixed;
-      bottom: 0;
-      width: calc(100% - 40px); /* 20px gap on each side */
-      margin: 0 auto;
-      left: 20px;
-      right: 20px;
-      overflow: hidden;
+    .footertext {  
+        bottom: 20px;
+        left: 20px;
+        z-index: 15000;
     }  
     
     #active-users, #help, #signin {  

@@ -148,6 +148,8 @@
 	border: 2px solid #fff;
 	transition: 0.5s;
     pointer-events: none;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 .clrcon i:nth-child(1)
 {
@@ -179,10 +181,12 @@
 {
 	0%
 	{
+        transform: scale(1);
 		transform: rotate(0deg);
 	}
 	100%
 	{
+        transform: scale(1);
 		transform: rotate(360deg);
 	}
 }
@@ -190,10 +194,12 @@
 {
 	0%
 	{
+        transform: scale(1);
 		transform: rotate(360deg);
 	}
 	100%
 	{
+        transform: scale(1);
 		transform: rotate(0deg);
 	}
 }
@@ -231,8 +237,6 @@ footer {
 .footertext {
     transition: 0.5s ease-in-out;
     text-shadow: 0px 0px 1px black;
-    display: flex;
-    flex-direction: column;
     position: absolute;
     left: 10px;
     bottom: 10px;
@@ -243,14 +247,17 @@ footer {
     width: 102px;
     display: flex;
     justify-content: center;
+    justify-self: left;
+    align-self: start;
     align-items: center;
     text-align: center;
+    margin-top: 10px;
+    margin-right: 10px;
     height: 18px;
     transition: background 0.5s ease-in-out;
     transition:  0.5s ease-in-out;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    right: 0%;
     border: 1px solid black;
     background: rgb(0, 0, 0);
     color: rgb(255, 255, 255);
@@ -771,19 +778,23 @@ label .sinput {
     body {  
       box-sizing: border-box;
       max-height: 100%;  /* Body height equals viewport height minus footer's 15px */
-      max-width: 100%; /* Prevents horizontal overflow */
+      max-width: 100vw; /* Prevents horizontal overflow */
       display: flex;  
       align-self: center;
       justify-self: center;
       flex-direction: column;  
       align-items: center;  
       justify-content: center;  
-      margin: 0;  /* Corrected margin */
+      margin: 0 auto;  /* Corrected margin */
       padding: 0;
       zoom: 0%;
       outline: #50f5cc solid 1px;
       overflow-y: hidden;
       overflow-x: hidden; /* Prevents horizontal scrolling */
+    }
+
+    .buttons {
+        width: 100vw;
     }
   
     .main {  
@@ -817,9 +828,13 @@ label .sinput {
       box-sizing: border-box;
     }  
   
+    .clrcon i {
+        display: none !important;
+    }
+
     .clrcon {  
       height: 100vw;
-      padding: 20px;
+      padding: 0;
       width: 100%;  
       transform: scale(0.80);  
       text-align: center;  
@@ -854,7 +869,7 @@ label .sinput {
     #active-users {  
       width: 125px;
       font-size: 13.5px;
-      right: 10px; /* Adjusted */
+      margin-right: 3px;
       position: absolute;
       padding: 19px 0px;
     }
@@ -867,6 +882,8 @@ label .sinput {
     .conbox {  
       width: 100%;  
       transform: scale(0.9);  
+      margin: 0;
+      box-sizing: border-box;
     }  
     
     .auth-container {  

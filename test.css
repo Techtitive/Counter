@@ -288,11 +288,6 @@ footer {
     text-shadow: 0px 0px 15px rgb(60, 255, 0);
 }
 
-*::selection {
-    background-color: rgb(0, 0, 0);
-    color: rgb(0, 255, 115);
-}
-
 .buttons {
     display: flex;
     justify-content: left;

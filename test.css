@@ -770,7 +770,7 @@ label .sinput {
 
     body {  
       box-sizing: border-box;
-      height: calc(100vh - 15px);  /* Body height equals viewport height minus footer's 15px */
+      max-height: 100%;  /* Body height equals viewport height minus footer's 15px */
       max-width: 100%; /* Prevents horizontal overflow */
       display: flex;  
       align-self: center;

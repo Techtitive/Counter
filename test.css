@@ -696,6 +696,10 @@ label .sinput {
         box-sizing: border-box;
     }  
 
+    .clrcon i {
+        display: hidden;
+    }
+
     .clrcon {  
         height: 100vw;
         padding: 20px;
@@ -738,7 +742,7 @@ label .sinput {
     }  
     
     #active-users {  
-        width: 130;
+        width: 119px;
         font-size: 13.5px;
         right: 10px; /* Adjusted */
         position: absolute;
